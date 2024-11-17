@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id          String    @id @default(uuid())
+  name        String
+  email       String    @unique
+  role        String    @default("User")
+  groups      Group[]
+  projects    Project[]
+  ledGroups   Group[]   @relation("GroupLeader")
+  ledProjects Project[] @relation("ProjectLeader")
+  friends     User[]    @relation("UserFriends")
+  friendsOf User[] @relation("UserFriends")
+}
+
+model Group {
+  id       String    @id @default(uuid())
+  name     String
+  members  User[]
+  projects Project[]
+  leader   User      @relation("GroupLeader", fields: [leaderId], references: [id])
+  leaderId String
+}
+
+model Project {
+  id       String @id @default(uuid())
+  name     String
+  members  User[]
+  group    Group  @relation(fields: [groupId], references: [id])
+  groupId  String
+  leader   User   @relation("ProjectLeader", fields: [leaderId], references: [id])
+  leaderId String
+}
+
+
+// online chat
+// comments
+// Notification  
+// friends
+// survey
