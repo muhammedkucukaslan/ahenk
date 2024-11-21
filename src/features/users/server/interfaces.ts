@@ -19,9 +19,9 @@ interface IUserService {
     getIUserBasicInfoById: (id: string) => Promise<Result<IUserBasicInfo | null>>;
     getUserByEmail: (email: string) => Promise<Result<IUserBasicInfo | null>>;
     checkUserPassword: (data: InferType<typeof loginSchema>) => Promise<Result<IUserBasicInfo | null>>;
-    // updateUserName: (id: string, name: string) => Promise<Result<null>>;
-    // updateUserEmail: (id: string, email: string) => Promise<Result<null>>;
-    // updateUserRole: (id: string, role: string) => Promise<Result<null>>; 
+    updateUserName: (id: string, name: string) => Promise<Result<null>>;
+    updateUserEmail: (id: string, email: string) => Promise<Result<null>>;
+    updateUserRole: (id: string, role: string) => Promise<Result<null>>; 
     // getUserByIdWithGroups: (id: string) => Promise<Result<IUserBasicInfo & { groups: Group[] }>;
 
 }

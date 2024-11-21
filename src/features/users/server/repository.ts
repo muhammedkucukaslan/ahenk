@@ -1,6 +1,6 @@
 import prisma from "@/src/lib/database/prisma";
 import { IUserRepository } from "./interfaces";
-import { createResult } from "@/src/utils/returnFunction";
+import { createResult } from "@/src/utils/returnFunctions";
 import { comparePassword } from "../utils/bcrypt";
 
 export const UserRepository: IUserRepository = {
