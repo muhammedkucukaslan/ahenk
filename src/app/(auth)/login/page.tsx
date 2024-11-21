@@ -4,7 +4,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter , useSearchParams } from "next/navigation";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -12,13 +12,11 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  const searchParams = useSearchParams();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(""); // Hata mesajını sıfırla
-
-    // API çağrısı yaparak login işlemi
     try {
       const res = await fetch("/api/login", {
         method: "POST",
@@ -28,15 +26,14 @@ const LoginPage = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      if (res.ok) {
-        // Başarılı giriş durumunda kullanıcıyı dashboard'a yönlendir
-        router.push("/dashboard");
-      } else {
-        // Eğer hata varsa, hata mesajını göster
+      if (!res.ok) {
         const data = await res.json();
         console.log(data);
         setError(data.message || "Login failed");
       }
+      const next = searchParams.get('next'); // 'next' parametresini URL'den alıyoruz
+      const redirectTo = next ? String(next) : '/dashboard'; // Eğer 'next' varsa oraya git, yoksa '/dashboard'a git
+      router.push(redirectTo);
     } catch (err) {
       setError("MUHAMMED HATA YAPMIS");
     } finally {
