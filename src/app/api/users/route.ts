@@ -1,20 +1,13 @@
-import { NextRequest,NextResponse} from "next/server";
-import { UserController } from "@/src/app/controllers/user-controller";
-import { cookies } from 'next/headers'
-import { verifyToken } from "@/src/features/auth/utils/token";
+import { NextRequest, NextResponse } from "next/server";
+import { UserController } from "../../controllers/user-controller";
 
 
 export async function GET(req: NextRequest) {
     try {
-        const token = (await cookies()).get('token')?.value
-        console.log(token)
-        if (!token) {
-            return  NextResponse.redirect(new URL('/login', req.url))
-        }
-        const user = await verifyToken(token)
-        return NextResponse.json(user)
+        return UserController.getUser(req)
     } catch (error) {
-        
+        console.error("Error:", error)
+        return NextResponse.json({ "error": "Failed to get user" })
     }
 
 }
