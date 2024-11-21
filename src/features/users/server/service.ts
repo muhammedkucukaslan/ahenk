@@ -1,8 +1,9 @@
 import { UserRepository } from "./repository";
 import { IUserService } from "./interfaces";
 import { registerSchema } from "../validation";
-import { createResult } from "@/src/utils/returnFunction";
+import { createResult } from "@/src/utils/returnFunctions";
 import { hashPassword,comparePassword } from "../utils/bcrypt";
+import { create } from "domain";
 
 
 export const UserService : IUserService = {
@@ -20,7 +21,6 @@ export const UserService : IUserService = {
                     name: data.name
                 }
             );
-
             if (!creationResult.success) {
                 return createResult<null>(false, null, creationResult.message);
             }
@@ -34,7 +34,7 @@ export const UserService : IUserService = {
         try {
             const result = await UserRepository.deleteUser(id);
             if (!result.success) {
-                return createResult<null>(false, null, "Failed to delete user");
+                return createResult<null>(false, null, result.message);
             }
             return createResult<null>(true, null);
 
@@ -47,7 +47,7 @@ export const UserService : IUserService = {
         try {
             const result = await UserRepository.getIUserBasicInfoById(id);
             if (!result.success) {
-                return createResult<IUserBasicInfo>(false, null, "User not found");
+                return createResult<IUserBasicInfo>(false, null, result.message);
             }
             return createResult<IUserBasicInfo>(true, result.data);
         } catch (error) {
@@ -87,9 +87,42 @@ export const UserService : IUserService = {
             return createResult(false, null, "Failed to check password");
         }
      },
-//     updateUserName: (id: string, name: string) => Promise<Result<null>>,
-//     updateUserEmail: (id: string, email: string) => Promise<Result<null>>,
-//     updateUserRole: (id: string, role: string) => Promise<Result<null>> 
-// 
+     updateUserName: async (id: string, name: string) : Promise<Result<null>>=>{
+        try {
+            const result = await UserRepository.updateUserName(id,name)
+            if(!result.success){
+                return createResult(false , null, result.message)
+            }
+            return createResult(true,null)
+        } catch (error) {
+            console.log("Update Username Error",error)
+            return createResult(false, null, "Failed to update username")
+        }
+     },
+     updateUserEmail: async (id: string, email :string ) : Promise<Result<null>>=>{
+        try {
+            const result = await UserRepository.updateUserEmail(id,email)
+            if(!result.success){
+                return createResult(false , null, result.message)
+            }
+            return createResult(true,null)
+        } catch (error) {
+            console.log("Update Username Error",error)
+            return createResult(false, null, "Failed to update user email")
+        }
+     },
+     updateUserRole: async (id: string, role: string) : Promise<Result<null>>=>{
+        try {
+            const result = await UserRepository.updateUserRole(id,role)
+            if(!result.success){
+                return createResult(false , null, result.message)
+            }
+            return createResult(true,null)
+        } catch (error) {
+            console.log("Update User Role Error",error)
+            return createResult(false, null, "Failed to update user role")
+        }
+     }, 
+     
 }
 
