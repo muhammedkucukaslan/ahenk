@@ -1,5 +1,5 @@
 import { IAuthService } from "./interfaces";
-import { createResult } from "@/src/utils/returnFunction";
+import { createResult } from "@/src/utils/returnFunctions";
 import { generateToken } from "../utils/token";
 
 export const AuthService: IAuthService = {

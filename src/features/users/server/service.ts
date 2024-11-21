@@ -3,7 +3,6 @@ import { IUserService } from "./interfaces";
 import { registerSchema } from "../validation";
 import { createResult } from "@/src/utils/returnFunctions";
 import { hashPassword,comparePassword } from "../utils/bcrypt";
-import { create } from "domain";
 
 
 export const UserService : IUserService = {

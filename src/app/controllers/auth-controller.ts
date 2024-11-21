@@ -1,6 +1,6 @@
 import { UserService } from "@/src/features/users/server/service";
 import { NextRequest, NextResponse } from "next/server";
-import { createResult } from "@/src/utils/returnFunction";
+import { createResult } from "@/src/utils/returnFunctions";
 import { registerSchema, loginSchema } from "@/src/features/users/validation";
 import { auth } from "../useCases/auth";
 

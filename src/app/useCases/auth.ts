@@ -2,7 +2,7 @@ import { UserService } from "@/src/features/users/server/service";
 import { AuthService } from "@/src/features/auth/server/service";
 import { registerSchema, loginSchema } from "@/src/features/users/validation";
 import { InferType } from "yup";
-import { createResult } from "@/src/utils/returnFunction";
+import { createResult } from "@/src/utils/returnFunctions";
 export const auth = {
     signup: async (data: InferType<typeof registerSchema>): Promise<Result<{ token: string } | null>> => {
         try {
