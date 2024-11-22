@@ -1,5 +1,5 @@
 import { CardContent, CardFooter, CardHeader } from '@/src/components/ui/card';
-import LoginForm from '@/src/features/users/forms/login-form';
+import LoginForm from '@/src/features/auth/forms/login-form';
 import React from 'react';
 
 const Login = () => {

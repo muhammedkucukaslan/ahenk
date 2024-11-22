@@ -1,7 +1,7 @@
 import { ApiResponseHandler } from '@/src/lib/api-response-handler';
 import { axiosInstance } from '@/src/utils';
 import * as yup from 'yup';
-import { LoginSchema } from './schemas';
+import { loginSchema } from './validation';
 
 const userHandler = new ApiResponseHandler({
   resourceName: 'Kullanıcı',
@@ -16,7 +16,7 @@ const userHandler = new ApiResponseHandler({
 });
 
 export const login = async (
-  values: yup.InferType<typeof LoginSchema>
+  values: yup.InferType<typeof loginSchema>
 ): Promise<boolean> => {
   try {
     const res = await axiosInstance.post('/login', values);

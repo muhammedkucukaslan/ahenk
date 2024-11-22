@@ -2,13 +2,13 @@
 
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { LoginSchema } from '../schemas';
+import { loginSchema } from '../../users/validation';
 import { Form } from '@/src/components/ui/form';
 import DynamicFormField, {
   FormFieldType,
 } from '@/src/components/global/dynamic-form-field';
 import SubmitButton from '@/src/components/global/submit-button';
-import { login } from '../actions';
+import { login } from '../../users/actions';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ToastService } from '../../toasts/services';
 
@@ -16,14 +16,14 @@ const LoginForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const form = useForm<yup.InferType<typeof LoginSchema>>({
+  const form = useForm<yup.InferType<typeof loginSchema>>({
     defaultValues: {
       email: '',
       password: '',
     },
   });
 
-  const onSubmit = async (data: yup.InferType<typeof LoginSchema>) => {
+  const onSubmit = async (data: yup.InferType<typeof loginSchema>) => {
     try {
       await login(data);
       const next = searchParams.get('next');
