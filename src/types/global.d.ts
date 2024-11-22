@@ -1,16 +1,3 @@
-type User = {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    groups: Group[];
-    projects: Project[];
-    ledGroups: Group[];
-    ledProjects: Project[];
-    friends: User[];
-    friendsOf: User[];
-};
-
 type Group = {
     id: string;
     name: string;
@@ -29,3 +16,15 @@ type Project = {
     leader: User;
     leaderId: string;
 };
+
+
+// resutl type for all service and repository methods
+type Result<T> = {
+    success: boolean;
+    data: T | null;
+    message?: string;
+};
+
+
+type ResultResponse<T> = NextResponse<Result<T>>;
+
