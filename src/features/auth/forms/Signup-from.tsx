@@ -3,7 +3,8 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema } from "../../users/validation";
+import { registerSchema } from "../../users/validation";
+
 import { Form } from "@/src/components/ui/form";
 import DynamicFormField, {
   FormFieldType,
@@ -15,7 +16,7 @@ const SignupForm = () => {
   const router = useRouter();
 
   const form = useForm({
-    resolver: yupResolver(loginSchema), // Doğrulama şeması
+    resolver: yupResolver(registerSchema), // Doğrulama şeması
     defaultValues: {
       name: "",
       email: "",
