@@ -5,6 +5,7 @@ import { Form } from '@/src/components/ui/form';
 import DynamicFormField, {
   FormFieldType,
 } from '@/src/components/global/dynamic-form-field';
+import SubmitButton from '@/src/components/global/submit-button';
 
 const LoginForm = () => {
   const form = useForm<yup.InferType<typeof LoginSchema>>({
@@ -14,9 +15,7 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = (data: yup.InferType<typeof LoginSchema>) => {
-    console.log(data);
-  };
+  const onSubmit = (data: yup.InferType<typeof LoginSchema>) => {};
 
   return (
     <Form {...form}>
@@ -36,6 +35,10 @@ const LoginForm = () => {
           label='Şifre'
           placeholder='Şifreniz...'
         />
+
+        <SubmitButton loading={form.formState.isSubmitting}>
+          Devam et
+        </SubmitButton>
       </form>
     </Form>
   );
