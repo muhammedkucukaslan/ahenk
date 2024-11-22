@@ -61,5 +61,25 @@ export const AuthController = {
             }
             return NextResponse.json(createResult(false, null, "Failed to create user"), { status: 500 });
         }
+    },
+    logout: async (req: NextRequest): Promise<ResultResponse<null>> => {
+        try {
+            const token = req.cookies.get("token");
+
+            if (!token) {
+                return NextResponse.json(createResult(false, null, "Token not found"), { status: 400 });
+            }
+            
+            const response = NextResponse.json(createResult(true, null), { status: 200 });
+            response.cookies.set({
+                name: "token",
+                value: "",
+            })
+            return response;
+
+        } catch (error: any) {
+            console.error("Logout Error:", error);
+            return NextResponse.json(createResult(false, null, "Failed to logout"), { status: 500 });
+        }
     }
 }
