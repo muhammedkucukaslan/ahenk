@@ -1,6 +1,6 @@
 import { Control } from 'react-hook-form';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/src/utils/utils';
 import {
   FormControl,
   FormField,
