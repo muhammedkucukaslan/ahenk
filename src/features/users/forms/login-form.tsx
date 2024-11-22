@@ -1,3 +1,5 @@
+'use client';
+
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { LoginSchema } from '../schemas';
@@ -6,8 +8,14 @@ import DynamicFormField, {
   FormFieldType,
 } from '@/src/components/global/dynamic-form-field';
 import SubmitButton from '@/src/components/global/submit-button';
+import { login } from '../actions';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { ToastService } from '../../toasts/services';
 
 const LoginForm = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const form = useForm<yup.InferType<typeof LoginSchema>>({
     defaultValues: {
       email: '',
@@ -15,7 +23,17 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = (data: yup.InferType<typeof LoginSchema>) => {};
+  const onSubmit = async (data: yup.InferType<typeof LoginSchema>) => {
+    try {
+      await login(data);
+      const next = searchParams.get('next');
+      const redirectTo = next ? String(next) : '/dashboard';
+      router.push(redirectTo);
+    } catch (error) {
+      console.error('Login error:', error);
+      ToastService.error('Giriş yapılırken bir hata oluştu');
+    }
+  };
 
   return (
     <Form {...form}>

@@ -1,16 +1,6 @@
 import { Control } from 'react-hook-form';
 
-import { cn } from '@/src/utils/utils';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/src/utils';
 import { DatePicker } from '../ui/date-picker';
 import {
   Select,
@@ -19,6 +9,16 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Switch } from '../ui/switch';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import { Checkbox } from '../ui/checkbox';
 
 export enum FormFieldType {
   INPUT = 'input',

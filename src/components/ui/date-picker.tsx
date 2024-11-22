@@ -3,18 +3,14 @@
 import * as React from 'react';
 import { format } from 'date-fns';
 
-import { cn } from '@/src/utils/utils';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { cn } from '@/src/utils';
 import { SelectSingleEventHandler } from 'react-day-picker';
 
 import { tr } from 'date-fns/locale';
 import { CalendarDays } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Button } from './button';
+import { Calendar } from './calendar';
 
 type DatePickerProps = {
   selected?: Date;
