@@ -7,12 +7,12 @@ import React from "react";
 const SignupPage = () => {
   return (
     <div
-      className={`flex flex-col h-screen justify-center 
+      className={`flex flex-col min-h-screen justify-center 
       sm:items-center`}
     >
       <div
-        className={`flex flex-col justify-center rounded-lg border shadow-lg
-        sm:w-96 
+        className={`flex flex-col justify-center sm:rounded-lg sm:border sm:shadow-lg
+        sm:w-96 sm:
        `}
       >
         <CardHeader className={"text-2xl font-semibold"}>
