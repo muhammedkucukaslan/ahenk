@@ -6,19 +6,30 @@ import React from "react";
 
 const SignupPage = () => {
   return (
-    <div className={"flex flex-col w-screen h-screen  justify-center "}>
-      <CardHeader className={"text-2xl font-semibold"}>Hoşgeldiniz</CardHeader>
-      <CardContent>
-        <SignupFrom />
-      </CardContent>
-      <CardFooter>
-        <p className={"font-semibold tracking-wide "}>
-          Hesabın var mı?{" "}
-          <a href="/login" className={"text-blue-600"}>
-            giris yap
-          </a>
-        </p>
-      </CardFooter>
+    <div
+      className={`flex flex-col h-screen justify-center 
+      sm:items-center`}
+    >
+      <div
+        className={`flex flex-col justify-center rounded-lg border shadow-lg
+        sm:w-96 
+       `}
+      >
+        <CardHeader className={"text-2xl font-semibold"}>
+          Hoşgeldiniz
+        </CardHeader>
+        <CardContent>
+          <SignupFrom />
+        </CardContent>
+        <CardFooter>
+          <p className={"font-semibold tracking-wide "}>
+            Hesabın var mı?{" "}
+            <a href="/login" className={"text-blue-600"}>
+              giris yap
+            </a>
+          </p>
+        </CardFooter>
+      </div>
     </div>
   );
 };
