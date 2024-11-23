@@ -6,14 +6,17 @@ import React from "react";
 
 const SignupPage = () => {
   return (
-    <div>
-      <CardHeader>Hosgeldiniz</CardHeader>
+    <div className={"flex flex-col w-screen h-screen  justify-center "}>
+      <CardHeader className={"text-2xl font-semibold"}>Hoşgeldiniz</CardHeader>
       <CardContent>
         <SignupFrom />
       </CardContent>
       <CardFooter>
-        <p>
-          Hesabın var mı? <a href="/login">giris yap</a>
+        <p className={"font-semibold tracking-wide "}>
+          Hesabın var mı?{" "}
+          <a href="/login" className={"text-blue-600"}>
+            giris yap
+          </a>
         </p>
       </CardFooter>
     </div>

@@ -59,7 +59,10 @@ const SignupForm = () => {
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={"flex flex-col gap-4 w-[100%] font-medium "}
+        >
           <DynamicFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
@@ -81,7 +84,10 @@ const SignupForm = () => {
             label="Şifre"
             placeholder="Şifreniz..."
           />
-          <SubmitButton loading={form.formState.isSubmitting}>
+          <SubmitButton
+            loading={form.formState.isSubmitting}
+            className={"mt-8"}
+          >
             Kaydol
           </SubmitButton>
         </form>
