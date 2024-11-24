@@ -17,8 +17,8 @@ export const auth = {
             }
             return createResult<{ token: string }>(true, { token: tokenResult.data! });
         } catch (error) {
-            console.error("Create User Error:", error);
-            return createResult(false, null, "Failed to create user");
+            console.error("Signup Error:", error);
+            return createResult(false, null, "Hesap oluşturma işleminde hata oluştu");
         }
     },
     login: async (data: InferType<typeof loginSchema>): Promise<Result<{ token: string } | null>> => {
@@ -29,14 +29,14 @@ export const auth = {
             }
 
             const tokenResult = await AuthService.generateToken(result.data.id, result.data.role);
-            if (!tokenResult.success) {
+            if (!tokenResult.success|| !tokenResult.data) {
                 return createResult(false, null, tokenResult.message)
             }
-            return createResult<{ token: string }>(true, { token: tokenResult.data! });
+            return createResult<{ token: string }>(true, { token: tokenResult.data });
 
         } catch (error) {
-            console.error("Create User Error:", error);
-            return createResult(false, null, "Failed to create user");
+            console.error("Login Error:", error);
+            return createResult(false, null, "Giriş işleminde hata oluştu");
         }
     }
 

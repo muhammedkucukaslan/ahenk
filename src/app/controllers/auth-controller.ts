@@ -14,11 +14,10 @@ export const AuthController = {
             const result = await auth.signup(data);
 
             if (!result.success || !result.data) {
-                return NextResponse.json(createResult(false, null, result.message || "Signup failed"), { status: 400 });
+                return NextResponse.json(createResult(false, null, result.message || "Hesap oluşturma işleminde hata oluştu."), { status: 400 });
             }
 
             const response = NextResponse.json(createResult(true, null), { status: 201 });
-            console.log("token", result.data.token);
             response.cookies.set({
                 name: "token",
                 value: result.data.token,
@@ -29,9 +28,9 @@ export const AuthController = {
         } catch (error: any) {
             console.error("Signup Error:", error);
             if (error.name === 'ValidationError') {
-                return NextResponse.json(createResult(false, null, "Invalid data"), { status: 400 });
+                return NextResponse.json(createResult(false, null, "Geçersiz bilgiler gönderildi"), { status: 400 });
             }
-            return NextResponse.json(createResult(false, null, "Failed to create user"), { status: 500 });
+            return NextResponse.json(createResult(false, null, "Hesap oluşturma işleminde hata oluştu"), { status: 500 });
         }
     },
     login: async (req: NextRequest): Promise<ResultResponse<null>> => {
@@ -55,11 +54,11 @@ export const AuthController = {
             return response;
         }
         catch (error: any) {
-            console.error("Signup Error:", error);
+            console.error("Signin Error:", error);
             if (error.name === 'ValidationError') {
-                return NextResponse.json(createResult(false, null, "Invalid data"), { status: 400 });
+                return NextResponse.json(createResult(false, null, "Geçersiz bilgiler gönderildi."), { status: 400 });
             }
-            return NextResponse.json(createResult(false, null, "Failed to create user"), { status: 500 });
+            return NextResponse.json(createResult(false, null, "Giriş işleminde hata oluştu."), { status: 500 });
         }
     },
     logout: async (req: NextRequest): Promise<ResultResponse<null>> => {
@@ -67,7 +66,7 @@ export const AuthController = {
             const token = req.cookies.get("token");
 
             if (!token) {
-                return NextResponse.json(createResult(false, null, "Token not found"), { status: 400 });
+                return NextResponse.json(createResult(false, null, "Yetkilendirilmemiş işlem yapıldı"), { status: 400 });
             }
             
             const response = NextResponse.json(createResult(true, null), { status: 200 });
@@ -79,7 +78,7 @@ export const AuthController = {
 
         } catch (error: any) {
             console.error("Logout Error:", error);
-            return NextResponse.json(createResult(false, null, "Failed to logout"), { status: 500 });
+            return NextResponse.json(createResult(false, null, "Çıkış yapmada hata oluştu"), { status: 500 });
         }
     }
 }
