@@ -1,7 +1,6 @@
 import prisma from "@/src/lib/database/prisma";
 import { IUserRepository } from "./interfaces";
 import { createResult } from "@/src/utils/returnFunctions";
-import { comparePassword } from "../utils/bcrypt";
 
 export const UserRepository: IUserRepository = {
     createUser: async (data): Promise<Result<IUserBasicInfo | null>> => {
@@ -14,9 +13,12 @@ export const UserRepository: IUserRepository = {
                 },
             });
             return createResult<IUserBasicInfo>(true, user);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Create User Error:", error);
-            return createResult(false, null, "Failed to create user");
+            if (error.code === "SQLITE_CONSTRAINT") {
+                return createResult(false, null, "Bu e-posta adresi kullanılmaktadır");
+            }
+            return createResult(false, null, "Kullanıcı oluşturulurken hata oluştu");
         }
     },
 
@@ -74,21 +76,31 @@ export const UserRepository: IUserRepository = {
         }
     },
 
-    getUserPassword: async (email: string): Promise<Result<string|null>> => {
+    getUserPasswordAndTokenInfos: async (email: string): Promise<Result<{
+        id: string,
+        password: string,
+        role: string
+    } | null>> => {
         try {
             const user = await prisma.user.findUnique({
-                where: { email : email },
+                where: { email: email },
                 select: {
+                    id: true,
+                    role: true,
                     password: true,
                 },
             });
             if (!user) {
                 return createResult(false, null, "User not found");
             }
-            return createResult<string>(true, user.password);
+            return createResult<{
+                id: string,
+                password: string,
+                role: string
+            }>(true, user);
         } catch (error) {
             console.error("Check User Password Error:", error);
-            return createResult(false, null, "Failed to check user password");
+            return createResult(false, null, "Şifre kontrolünde hata oluştu");
         }
     },
 
@@ -136,44 +148,5 @@ export const UserRepository: IUserRepository = {
             return createResult(false, null, "Failed to update user role");
         }
     },
-
-
-
-    // getUserByIdWithGroups: async (id): Promise<Result<IUserBasicInfo & { groups: Group[] }>> =>{
-    //     try {   
-    //         const user = await prisma.user.findUnique({
-    //             where: { id },
-    //             include: {
-    //               groups: {
-    //                 include: {
-    //                   members: true,  // Grup üyelerini dahil et
-    //                   projects: true, // Grup projelerini dahil et
-    //                   leader: true,   // Grup liderini dahil et
-    //                 },
-    //               },
-    //             },
-    //           });
-
-    //         if (!user) {
-    //             return { success: false, message: 'User not found' }
-    //           }
-
-
-    //           const userBasicInfo: IUserBasicInfo = {
-    //             id: user.id,
-    //             name: user.name,
-    //             email: user.email,
-    //             role: user.role,
-    //           };
-
-    //           return {
-    //             success: true,
-    //             data: { ...userBasicInfo, groups: user.groups },
-    //           }
-    //     } catch (error) {
-    //         console.error("Get User Friends Error:", error);
-    //         return { success: false, message: "Failed to retrieve user friends" };
-    //     }
-
 }
 
