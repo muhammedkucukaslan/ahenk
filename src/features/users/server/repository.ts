@@ -30,7 +30,7 @@ export const UserRepository: IUserRepository = {
             return createResult(true, null);
         } catch (error) {
             console.error("Delete User Error:", error);
-            return createResult(false, null, "Failed to delete user");
+            return createResult(false, null, "Kullanıcı silinirken hata oluştu");
         }
     },
 
@@ -46,12 +46,12 @@ export const UserRepository: IUserRepository = {
                 },
             }) as IUserBasicInfo;
             if (!user) {
-                return createResult(false, null, "User not found");
+                return createResult(false, null, "Kullanıcı bulunamadı");
             }
             return createResult<IUserBasicInfo>(true, user);
         } catch (error) {
             console.error("Get User Info Error:", error);
-            return createResult(false, null, "Failed to retrieve user information");
+            return createResult(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
         }
     },
 
@@ -67,12 +67,12 @@ export const UserRepository: IUserRepository = {
                 }
             })
             if (!user) {
-                return createResult(false, null, "User not found");
+                return createResult(false, null, "Kullanıcı bulunamadı");
             }
             return createResult<IUserBasicInfo>(true, user);
         } catch (error) {
-            console.error("Get User Info Error:", error);
-            return createResult(false, null, "Failed to retrieve user information");
+            console.error("Get User Info By Email Error:", error);
+            return createResult(false, null, "Kullanıcı bilgileri getirilirken bir hata oluştu");
         }
     },
 
@@ -91,7 +91,7 @@ export const UserRepository: IUserRepository = {
                 },
             });
             if (!user) {
-                return createResult(false, null, "User not found");
+                return createResult(false, null, "Kullanıcı bulunamadı");
             }
             return createResult<{
                 id: string,
@@ -115,7 +115,7 @@ export const UserRepository: IUserRepository = {
             return createResult(true, null);
         } catch (error) {
             console.error("Update User Name Error:", error);
-            return createResult(false, null, "Failed to update user name");
+            return createResult(false, null, "Kullanıcı adı güncellenirken hata oluştu");
         }
     },
 
@@ -130,7 +130,7 @@ export const UserRepository: IUserRepository = {
             return createResult(true, null);
         } catch (error) {
             console.error("Update User Name Error:", error);
-            return createResult(false, null, "Failed to update user email");
+            return createResult(false, null, "Kullanıcı e-postası güncellenirken hata oluştu");
         }
     },
 
@@ -145,7 +145,7 @@ export const UserRepository: IUserRepository = {
             return createResult(true, null);
         } catch (error) {
             console.error("Update User Name Error:", error);
-            return createResult(false, null, "Failed to update user role");
+            return createResult(false, null, "Kullanıcı rolü güncellenirken hata oluştu");
         }
     },
 }
