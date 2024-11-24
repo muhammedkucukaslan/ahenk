@@ -1,17 +1,12 @@
 import { UserRepository } from "./repository";
 import { IUserService } from "./interfaces";
-import { registerSchema } from "../validation";
 import { createResult } from "@/src/utils/returnFunctions";
-import { hashPassword,comparePassword } from "../utils/bcrypt";
+import { hashPassword, comparePassword } from "../utils/bcrypt";
 
 
-export const UserService : IUserService = {
-    createUser: async (data): Promise<Result<IUserBasicInfo|null>> => {
+export const UserService: IUserService = {
+    createUser: async (data): Promise<Result<IUserBasicInfo | null>> => {
         try {
-            const emailResult = await UserRepository.getUserByEmail(data.email);
-            if (emailResult.success) {
-                return createResult<null>(false, null, "Email already exists");
-            }
             const hashedPassword = await hashPassword(data.password);
             const creationResult = await UserRepository.createUser(
                 {
@@ -23,10 +18,10 @@ export const UserService : IUserService = {
             if (!creationResult.success) {
                 return createResult<null>(false, null, creationResult.message);
             }
-            return createResult<IUserBasicInfo>(true, creationResult.data );
+            return createResult<IUserBasicInfo>(true, creationResult.data);
         } catch (error) {
             console.error("Create User Error:", error);
-            return createResult<null>(false, null, "Failed to create user");
+            return createResult<null>(false, null, "Kullanıcı oluşturulurken hata oluştu");
         }
     },
     deleteUser: async (id: string): Promise<Result<null>> => {
@@ -66,62 +61,64 @@ export const UserService : IUserService = {
             return createResult<IUserBasicInfo>(false, null, "Failed to retrieve user information");
         }
     },
-    checkUserPassword: async (data): Promise<Result<IUserBasicInfo|null>> => {
+    checkUserPasswordAndGetTokenInfos: async (data): Promise<Result<{
+        id: string;
+        role: string;
+    } | null>> => {
         try {
-            const result = await UserRepository.getUserPassword(data.email);
-            if (!result.success||!result.data) {
-                return createResult<IUserBasicInfo>(false, null, result.message);
+            const result = await UserRepository.getUserPasswordAndTokenInfos(data.email);
+            if (!result.success || !result.data) {
+                console.log(result.message);
+                return createResult(false, null, "E-posta veya şifre hatalı");
             }
-            const isPasswordCorrect = await comparePassword(data.password, result.data);
+            const isPasswordCorrect = await comparePassword(data.password, result.data.password);
+
             if (!isPasswordCorrect) {
-                return createResult(false, null, "Password incorrect");
+                console.log(result.message);
+                return createResult(false, null, "E-posta veya şifre hatalı");
             }
-            const userResult = await UserRepository.getUserByEmail(data.email);
-            if (!userResult.success || !userResult.data) {
-                return createResult(false, null, userResult.message);
-            }
-            return createResult<IUserBasicInfo>(true, userResult.data);
+
+            return createResult<{ id: string, role: string }>(true, result.data);
         } catch (error) {
             console.error("Check Password Error:", error);
-            return createResult(false, null, "Failed to check password");
+            return createResult(false, null, "E-posta veya şifre hatalı");
         }
-     },
-     updateUserName: async (id: string, name: string) : Promise<Result<null>>=>{
+    },
+    updateUserName: async (id: string, name: string): Promise<Result<null>> => {
         try {
-            const result = await UserRepository.updateUserName(id,name)
-            if(!result.success){
-                return createResult(false , null, result.message)
+            const result = await UserRepository.updateUserName(id, name)
+            if (!result.success) {
+                return createResult(false, null, result.message)
             }
-            return createResult(true,null)
+            return createResult(true, null)
         } catch (error) {
-            console.log("Update Username Error",error)
+            console.log("Update Username Error", error)
             return createResult(false, null, "Failed to update username")
         }
-     },
-     updateUserEmail: async (id: string, email :string ) : Promise<Result<null>>=>{
+    },
+    updateUserEmail: async (id: string, email: string): Promise<Result<null>> => {
         try {
-            const result = await UserRepository.updateUserEmail(id,email)
-            if(!result.success){
-                return createResult(false , null, result.message)
+            const result = await UserRepository.updateUserEmail(id, email)
+            if (!result.success) {
+                return createResult(false, null, result.message)
             }
-            return createResult(true,null)
+            return createResult(true, null)
         } catch (error) {
-            console.log("Update Username Error",error)
+            console.log("Update Username Error", error)
             return createResult(false, null, "Failed to update user email")
         }
-     },
-     updateUserRole: async (id: string, role: string) : Promise<Result<null>>=>{
+    },
+    updateUserRole: async (id: string, role: string): Promise<Result<null>> => {
         try {
-            const result = await UserRepository.updateUserRole(id,role)
-            if(!result.success){
-                return createResult(false , null, result.message)
+            const result = await UserRepository.updateUserRole(id, role)
+            if (!result.success) {
+                return createResult(false, null, result.message)
             }
-            return createResult(true,null)
+            return createResult(true, null)
         } catch (error) {
-            console.log("Update User Role Error",error)
+            console.log("Update User Role Error", error)
             return createResult(false, null, "Failed to update user role")
         }
-     }, 
-     
+    },
 }
 
