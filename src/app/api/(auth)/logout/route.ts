@@ -3,5 +3,5 @@ import { AuthController } from "@/src/app/controllers/auth-controller";
 
 
 export async function POST(req: NextRequest) {
-    return AuthController.signup(req);
+    return AuthController.logout(req);
 }

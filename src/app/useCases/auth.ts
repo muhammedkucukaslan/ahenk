@@ -11,10 +11,13 @@ export const auth = {
             if (!creationResult.success || !creationResult.data) {
                 return createResult(false, null, creationResult.message);
             }
+
             const tokenResult = await AuthService.generateToken(creationResult.data.id, creationResult.data.role);
+            
             if (!tokenResult.success) {
                 return createResult(false, null, tokenResult.message)
             }
+            
             return createResult<{ token: string }>(true, { token: tokenResult.data! });
         } catch (error) {
             console.error("Signup Error:", error);
@@ -23,7 +26,7 @@ export const auth = {
     },
     login: async (data: InferType<typeof loginSchema>): Promise<Result<{ token: string } | null>> => {
         try {
-            const result = await UserService.checkUserPassword(data);
+            const result = await UserService.checkUserPasswordAndGetTokenInfos(data);
             if (!result.success || !result.data) {
                 return createResult(false, null, result.message );
             }

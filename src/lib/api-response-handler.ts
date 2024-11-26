@@ -1,98 +1,66 @@
-import { ToastService } from '../features/toasts/services';
-import { ToastOptions } from '../features/toasts/types';
-import { CacheService } from './services/cache-service';
+import { AxiosResponse } from 'axios';
+import { ICacheService, INotificationService } from './interfaces';
+import { MessageFormatter } from './message-formatter';
+import { CacheConfig, NotificationConfig } from './types';
 
-export interface ApiResponse<T = any> {
-  data?: T;
-  status: number;
-  error?: string;
-}
+export class ApiResponseHandler<T = any> {
+  private notificationService: INotificationService;
+  private cacheService: ICacheService;
+  private messageFormatter: MessageFormatter;
+  private cacheConfig?: CacheConfig;
+  private notificationConfig: NotificationConfig;
 
-export interface ApiError {
-  response?: {
-    data?: {
-      error?: string;
-    };
-    status?: number;
-  };
-  message?: string;
-}
-
-export interface ApiHandlerConfig {
-  resourceName: string;
-  cachePaths?: string[];
-  customMessages?: {
-    success?: string;
-    error?: string;
-  };
-  toastOptions?: ToastOptions;
-}
-
-export class ApiResponseHandler {
-  private config: ApiHandlerConfig;
-
-  constructor(config: ApiHandlerConfig) {
-    this.config = {
-      ...config,
-      cachePaths: config.cachePaths || [],
-      toastOptions: {
-        duration: 3000,
-        ...config.toastOptions,
-      },
-    };
-  }
-
-  private getSuccessMessage(action: string): string {
-    return (
-      this.config.customMessages?.success ||
-      `${this.config.resourceName} ${action}`
+  constructor(
+    resourceName: string,
+    config: {
+      notificationService: INotificationService;
+      cacheService: ICacheService;
+      cacheConfig?: CacheConfig;
+      notificationConfig?: NotificationConfig;
+    }
+  ) {
+    this.notificationService = config.notificationService;
+    this.cacheService = config.cacheService;
+    this.messageFormatter = new MessageFormatter(
+      resourceName,
+      config.notificationConfig?.customMessages
     );
-  }
-
-  private getErrorMessage(action: string): string {
-    return (
-      this.config.customMessages?.error ||
-      `${this.config.resourceName} ${action} başarısız`
-    );
+    this.cacheConfig = config.cacheConfig;
+    this.notificationConfig = config.notificationConfig || {};
   }
 
   private handleSuccess(action: string): void {
-    ToastService.success(this.getSuccessMessage(action), {
+    const message = this.messageFormatter.formatSuccess(action);
+    this.notificationService.showSuccess(message, {
       description: 'İşlem başarıyla tamamlandı.',
-      ...this.config.toastOptions,
+      ...this.notificationConfig.toastOptions,
     });
 
-    if (this.config.cachePaths?.length) {
-      CacheService.revalidateMultiple(this.config.cachePaths);
+    if (this.cacheConfig?.paths.length) {
+      this.cacheService.revalidate(this.cacheConfig.paths);
     }
   }
 
-  private handleToastError(action: string, error?: string): void {
-    ToastService.error(this.getErrorMessage(action), {
-      description: error || 'Bir hata oluştu.',
-      ...this.config.toastOptions,
+  private handleError(action: string, errorMessage?: string): void {
+    const message = this.messageFormatter.formatError(action);
+    this.notificationService.showError(message, {
+      description: errorMessage || 'Bir hata oluştu.',
+      ...this.notificationConfig.toastOptions,
     });
   }
 
-  public handleResponse<T>(response: ApiResponse<T>, action: string): boolean {
+  public handleResponse(response: AxiosResponse, action: string): boolean {
     if (response.status >= 200 && response.status < 300) {
       this.handleSuccess(action);
       return true;
+    } else {
+      return this.handleException(response, action);
     }
-
-    this.handleToastError(action, response.error);
-    return false;
   }
 
-  public handleError(error: ApiError, action: string): boolean {
-    console.error(`${this.config.resourceName} ${action} hatası:`, error);
-
-    const errorMessage =
-      error.response?.data?.error ||
-      error.message ||
-      `${this.config.resourceName} ${action} sırasında bir hata oluştu.`;
-
-    this.handleToastError(action, errorMessage);
+  public handleException(error: any, action: string): boolean {
+    console.error(`${action} error:`, error);
+    this.handleError(action, error.response.data.message);
     return false;
   }
 }

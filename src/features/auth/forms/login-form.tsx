@@ -8,7 +8,7 @@ import DynamicFormField, {
   FormFieldType,
 } from '@/src/components/global/dynamic-form-field';
 import SubmitButton from '@/src/components/global/submit-button';
-import { login } from '../../users/actions';
+import { login } from '../actions';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ToastService } from '../../toasts/services';
 
@@ -37,7 +37,10 @@ const LoginForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={'flex flex-col gap-4 w-[100%] font-medium '}
+      >
         <DynamicFormField
           fieldType={FormFieldType.INPUT}
           control={form.control}
@@ -54,7 +57,7 @@ const LoginForm = () => {
           placeholder='Şifreniz...'
         />
 
-        <SubmitButton loading={form.formState.isSubmitting}>
+        <SubmitButton loading={form.formState.isSubmitting} className={'mt-8'}>
           Devam et
         </SubmitButton>
       </form>
