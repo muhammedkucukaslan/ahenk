@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import useSidebarStore from './store';
+import useSidebarStore from './SideBarStore';
 
 const SideBar = () => {
   const { isSideBarOpen } = useSidebarStore();
