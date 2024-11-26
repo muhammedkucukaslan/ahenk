@@ -14,7 +14,7 @@ export const AuthController = {
             const result = await auth.signup(data);
 
             if (!result.success || !result.data) {
-                return NextResponse.json(createResult(false, null, result.message || "Hesap oluşturma işleminde hata oluştu."), { status: 400 });
+                return NextResponse.json(createResult(false, null, result.message), { status: 400 });
             }
 
             const response = NextResponse.json(createResult(true, null), { status: 201 });
@@ -41,7 +41,7 @@ export const AuthController = {
             const result = await auth.login(data);
 
             if (!result.success || !result.data) {
-                return NextResponse.json(createResult(false, null, result.message || "Login failed"), { status: 500 });
+                return NextResponse.json(createResult(false, null, result.message || "Login failed"), { status: 400 });
             }
 
             const response = NextResponse.json(createResult(true, null), { status: 200 });
