@@ -8,13 +8,13 @@ export const AuthService: IAuthService = {
             const token = await generateToken(id, role);
             
             if (!token) {
-                return createResult(false, null, "Failed to generate token")
+                return createResult(false, null, "Token üretilemedi");
             }
             
             return createResult(true, token);
         } catch (error) {
             console.error("Generate Token Error:", error);
-            return createResult(false, null, "Failed to generate token");
+            return createResult(false, null, "Token üretiminde hata oluştu");
         }
     }
 }

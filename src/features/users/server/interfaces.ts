@@ -6,7 +6,7 @@ interface IUserRepository {
     deleteUser: (id: string) => Promise<Result<null>>;
     getIUserBasicInfoById: (id: string) => Promise<Result<IUserBasicInfo | null>>;
     getUserByEmail: (email: string) => Promise<Result<IUserBasicInfo | null>>;
-    getUserPassword: (email: string) => Promise<Result<string|null>>;
+    getUserPasswordAndTokenInfos: (email: string) => Promise<Result<{ id: string, password: string, role: string } | null>>;
     updateUserName: (id: string, name: string) => Promise<Result<null>>;
     updateUserEmail: (id: string, email: string) => Promise<Result<null>>;
     updateUserRole: (id: string, role: string) => Promise<Result<null>>;
@@ -18,10 +18,10 @@ interface IUserService {
     deleteUser: (id: string) => Promise<Result<null>>;
     getIUserBasicInfoById: (id: string) => Promise<Result<IUserBasicInfo | null>>;
     getUserByEmail: (email: string) => Promise<Result<IUserBasicInfo | null>>;
-    checkUserPassword: (data: InferType<typeof loginSchema>) => Promise<Result<IUserBasicInfo | null>>;
+    checkUserPasswordAndGetTokenInfos: (data: InferType<typeof loginSchema>) => Promise<Result<{ id: string, role: string}|null>>;
     updateUserName: (id: string, name: string) => Promise<Result<null>>;
     updateUserEmail: (id: string, email: string) => Promise<Result<null>>;
-    updateUserRole: (id: string, role: string) => Promise<Result<null>>; 
+    updateUserRole: (id: string, role: string) => Promise<Result<null>>;
     // getUserByIdWithGroups: (id: string) => Promise<Result<IUserBasicInfo & { groups: Group[] }>;
 
 }
