@@ -1,6 +1,7 @@
+import { AxiosResponse } from 'axios';
 import { ICacheService, INotificationService } from './interfaces';
 import { MessageFormatter } from './message-formatter';
-import { ApiResponse, CacheConfig, NotificationConfig } from './types';
+import { CacheConfig, NotificationConfig } from './types';
 
 export class ApiResponseHandler<T = any> {
   private notificationService: INotificationService;
@@ -31,7 +32,7 @@ export class ApiResponseHandler<T = any> {
   private handleSuccess(action: string): void {
     const message = this.messageFormatter.formatSuccess(action);
     this.notificationService.showSuccess(message, {
-      description: 'Operation completed successfully.',
+      description: 'İşlem başarıyla tamamlandı.',
       ...this.notificationConfig.toastOptions,
     });
 
@@ -43,24 +44,23 @@ export class ApiResponseHandler<T = any> {
   private handleError(action: string, errorMessage?: string): void {
     const message = this.messageFormatter.formatError(action);
     this.notificationService.showError(message, {
-      description: errorMessage || 'An error occurred.',
+      description: errorMessage || 'Bir hata oluştu.',
       ...this.notificationConfig.toastOptions,
     });
   }
 
-  public handleResponse(response: ApiResponse<T>, action: string): boolean {
-    if (response.success) {
+  public handleResponse(response: AxiosResponse, action: string): boolean {
+    if (response.status >= 200 && response.status < 300) {
       this.handleSuccess(action);
       return true;
+    } else {
+      return this.handleException(response, action);
     }
-
-    this.handleError(action, response.message);
-    return false;
   }
 
   public handleException(error: any, action: string): boolean {
     console.error(`${action} error:`, error);
-    this.handleError(action);
+    this.handleError(action, error.response.data.message);
     return false;
   }
 }

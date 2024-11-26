@@ -1,6 +1,7 @@
-import { CardContent, CardFooter, CardHeader } from "@/src/components/ui/card";
-import LoginForm from "@/src/features/auth/forms/login-form";
-import React from "react";
+import { CardContent, CardFooter, CardHeader } from '@/src/components/ui/card';
+import LoginForm from '@/src/features/auth/forms/login-form';
+import Link from 'next/link';
+import React from 'react';
 
 const Login = () => {
   return (
@@ -13,16 +14,16 @@ const Login = () => {
         sm:w-96 sm:
        `}
       >
-        <CardHeader className={"text-2xl font-semibold"}>Login</CardHeader>
+        <CardHeader className={'text-2xl font-semibold'}>Giriş Yap</CardHeader>
         <CardContent>
           <LoginForm />
         </CardContent>
-        <CardFooter>
-          <p className={"font-semibold tracking-wide "}>
-            Hesabın yok mu?{" "}
-            <a href="/signup" className={"text-blue-600"}>
+        <CardFooter className='justify-center'>
+          <p className='text-sm'>
+            Hesabın yok mu?{' '}
+            <Link href='/signup' className={'text-primary font-semibold'}>
               Kayıt ol
-            </a>
+            </Link>
           </p>
         </CardFooter>
       </div>
