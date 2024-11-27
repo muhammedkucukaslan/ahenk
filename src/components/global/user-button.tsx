@@ -42,7 +42,7 @@ const UserButton = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className='relative cursor-pointer'>
+        <div className='relative cursor-pointer active:scale-90'>
           <Avatar>
             <AvatarImage src='https://github.com/shadcn.png' alt={user.name} />
             <AvatarFallback>{user.name}</AvatarFallback>
