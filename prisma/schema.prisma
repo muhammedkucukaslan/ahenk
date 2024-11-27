@@ -18,25 +18,13 @@ model User {
   bio         String?
   role        String    @default("USER")
   ledGroups   Group[]   @relation("GroupLeader")
-  ledProjects Project[] @relation("ProjectLeader")
   groups      Group[]   @relation("GroupToUser")
-  projects    Project[] @relation("ProjectToUser")
 }
 
 model Group {
   id       String    @id @default(uuid())
   name     String
   leaders   User []   @relation("GroupLeader")
-  projects Project[]
   members  User[]    @relation("GroupToUser")
 }
 
-model Project {
-  id       String @id @default(uuid())
-  name     String
-  groupId  String
-  leaderId String
-  group    Group  @relation(fields: [groupId], references: [id])
-  leader   User   @relation("ProjectLeader", fields: [leaderId], references: [id])
-  members  User[] @relation("ProjectToUser")
-}
