@@ -9,7 +9,7 @@ export default function DashboardLayout({
   return (
     <main className='h-screen w-full'>
       <Navbar />
-      <div className='flex h-full'>
+      <div className='flex h-full pt-[62px]'>
         <SideBar />
         <main className='flex-1 p-6 h-full overflow-y-auto overflow-x-hidden'>
           {children}

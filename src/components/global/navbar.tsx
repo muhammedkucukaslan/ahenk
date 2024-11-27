@@ -7,7 +7,7 @@ import Notifications from './notifications';
 
 const Navbar = () => {
   return (
-    <nav className='flex w-full py-2.5 px-4 border-b items-center justify-between'>
+    <nav className='flex absolute top-0 w-full h-[62px] px-4 border-b items-center justify-between'>
       <div className='flex gap-6 items-center'>
         <Link href={'/dashboard'}>
           <h4 className='text-2xl font-bold cursor-pointer'>Ahenk</h4>
