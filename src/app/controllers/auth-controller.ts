@@ -31,6 +31,7 @@ export const AuthController = {
         name: 'token',
         value: result.data.token,
         path: '/',
+        maxAge: 14 * 24 * 60 * 60 * 1000
       });
 
       return response;
