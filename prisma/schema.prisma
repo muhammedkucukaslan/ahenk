@@ -11,8 +11,11 @@ datasource db {
 model User {
   id          String    @id @default(uuid())
   name        String
+  surname     String
   email       String    @unique
   password    String
+  profilePic  String    @default("https://cdn.iconscout.com/icon/free/png-256/avatar-380-456332.png")
+  bio         String?
   role        String    @default("USER")
   ledGroups   Group[]   @relation("GroupLeader")
   ledProjects Project[] @relation("ProjectLeader")
