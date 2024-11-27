@@ -45,7 +45,6 @@ export const UserRepository: IUserRepository = {
         profilePic: string
         ledGroups: { id: string, name: string }[]
         groups: { id: string, name: string }[]
-        projects: { id: string, name: string }[]
     } | null>> => {
         try {
             const user = await prisma.user.findUnique({
@@ -70,12 +69,6 @@ export const UserRepository: IUserRepository = {
                             name: true
                         }
                     },
-                    projects: {
-                        select: {
-                            id: true,
-                            name: true
-                        }
-                    }
                 }
             });
             if (!user) {

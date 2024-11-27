@@ -14,7 +14,6 @@ interface IUserRepository {
         profilePic: string
         ledGroups: { id: string, name: string }[]
         groups: { id: string, name: string }[]
-        projects: { id: string, name: string }[]
     } | null>>
     getUserByEmail: (email: string) => Promise<Result<IUserBasicInfo | null>>;
     getUserPasswordAndTokenInfos: (email: string) => Promise<Result<{ id: string, password: string, role: string } | null>>;
@@ -37,7 +36,6 @@ interface IUserService {
         profilePic: string
         ledGroups: { id: string, name: string }[]
         groups: { id: string, name: string }[]
-        projects: { id: string, name: string }[]
     } | null>>;
     getUserByEmail: (email: string) => Promise<Result<IUserBasicInfo | null>>;
     checkUserPasswordAndGetTokenInfos: (data: InferType<typeof loginSchema>) => Promise<Result<{ id: string, role: string } | null>>;

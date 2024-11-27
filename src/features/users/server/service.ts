@@ -48,7 +48,6 @@ export const UserService: IUserService = {
         profilePic: string
         ledGroups: { id: string, name: string }[]
         groups: { id: string, name: string }[]
-        projects: { id: string, name: string }[]
     } | null>> => {
         try {
             const result = await UserRepository.getIUserBasicInfoById(id);
