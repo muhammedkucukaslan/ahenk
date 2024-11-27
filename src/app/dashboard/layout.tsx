@@ -1,4 +1,5 @@
 import Navbar from '@/src/components/global/navbar';
+import SideBar from './sidebar/SideBar';
 
 export default function DashboardLayout({
   children,
@@ -8,7 +9,12 @@ export default function DashboardLayout({
   return (
     <main className='h-screen w-full'>
       <Navbar />
-      {children}
+      <div className='flex h-full'>
+        <SideBar />
+        <main className='flex-1 p-6 h-full overflow-y-auto overflow-x-hidden'>
+          {children}
+        </main>
+      </div>
     </main>
   );
 }

@@ -8,11 +8,12 @@ const SideBar = () => {
 
   return (
     <div
-      className={`fixed left-0 top-0 h-full 
+      className={`h-full 
                     ${isSideBarOpen ? 'flex' : 'hidden'}
                     lg:flex
                     xl:flex
                     2xl:flex
+                    w-72 border-r p-4
                     `}
     >
       <h1>SideBar</h1>

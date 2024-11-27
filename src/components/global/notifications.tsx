@@ -43,7 +43,7 @@ const NotificationsSheet = () => {
 const Notifications = () => {
   return (
     <Sheet>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         <Button
           variant={'outline'}
           className='h-10 w-10 rounded-full border flex items-center justify-center'
