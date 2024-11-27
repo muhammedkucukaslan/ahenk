@@ -10,6 +10,7 @@ export const UserRepository: IUserRepository = {
                     email: data.email,
                     name: data.name,
                     password: data.password,
+                    surname: data.surname
                 },
             });
             return createResult<IUserBasicInfo>(true, user);
@@ -30,28 +31,60 @@ export const UserRepository: IUserRepository = {
             return createResult(true, null);
         } catch (error) {
             console.error("Delete User Error:", error);
-            return createResult(false, null, "Failed to delete user");
+            return createResult(false, null, "Kullanıcı silinirken hata oluştu");
         }
     },
 
-    getIUserBasicInfoById: async (id): Promise<Result<IUserBasicInfo | null>> => {
+    getIUserBasicInfoById: async (id): Promise<Result<{
+        id: string,
+        name: string,
+        email: string,
+        surname : string,
+        role: string
+        bio: string | null,
+        profilePic: string
+        ledGroups: { id: string, name: string }[]
+        groups: { id: string, name: string }[]
+        projects: { id: string, name: string }[]
+    } | null>> => {
         try {
             const user = await prisma.user.findUnique({
-                where: { id },
+                where: { id: id },
                 select: {
                     id: true,
                     name: true,
+                    surname:true,
                     email: true,
                     role: true,
-                },
-            }) as IUserBasicInfo;
+                    bio: true,
+                    profilePic: true,
+                    ledGroups: {
+                        select: {
+                            id: true,
+                            name: true,
+                        }
+                    },
+                    groups: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    },
+                    projects: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
+            });
             if (!user) {
-                return createResult(false, null, "User not found");
+                return createResult(false, null, "Kullanıcı bulunamadı");
             }
-            return createResult<IUserBasicInfo>(true, user);
+            return createResult(true, user);
         } catch (error) {
             console.error("Get User Info Error:", error);
-            return createResult(false, null, "Failed to retrieve user information");
+            return createResult(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
         }
     },
 
@@ -62,17 +95,18 @@ export const UserRepository: IUserRepository = {
                 select: {
                     name: true,
                     email: true,
+                    surname: true,
                     id: true,
                     role: true
                 }
             })
             if (!user) {
-                return createResult(false, null, "User not found");
+                return createResult(false, null, "Kullanıcı bulunamadı");
             }
             return createResult<IUserBasicInfo>(true, user);
         } catch (error) {
-            console.error("Get User Info Error:", error);
-            return createResult(false, null, "Failed to retrieve user information");
+            console.error("Get User Info By Email Error:", error);
+            return createResult(false, null, "Kullanıcı bilgileri getirilirken bir hata oluştu");
         }
     },
 
@@ -91,7 +125,7 @@ export const UserRepository: IUserRepository = {
                 },
             });
             if (!user) {
-                return createResult(false, null, "User not found");
+                return createResult(false, null, "Kullanıcı bulunamadı");
             }
             return createResult<{
                 id: string,
@@ -115,7 +149,7 @@ export const UserRepository: IUserRepository = {
             return createResult(true, null);
         } catch (error) {
             console.error("Update User Name Error:", error);
-            return createResult(false, null, "Failed to update user name");
+            return createResult(false, null, "Kullanıcı adı güncellenirken hata oluştu");
         }
     },
 
@@ -130,7 +164,7 @@ export const UserRepository: IUserRepository = {
             return createResult(true, null);
         } catch (error) {
             console.error("Update User Name Error:", error);
-            return createResult(false, null, "Failed to update user email");
+            return createResult(false, null, "Kullanıcı e-postası güncellenirken hata oluştu");
         }
     },
 
@@ -145,7 +179,7 @@ export const UserRepository: IUserRepository = {
             return createResult(true, null);
         } catch (error) {
             console.error("Update User Name Error:", error);
-            return createResult(false, null, "Failed to update user role");
+            return createResult(false, null, "Kullanıcı rolü güncellenirken hata oluştu");
         }
     },
 }

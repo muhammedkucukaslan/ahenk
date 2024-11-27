@@ -15,6 +15,7 @@ type User = {
 type IUserBasicInfo ={
     id : string
     name : string
+    surname: string
     email : string
     role : string
 }

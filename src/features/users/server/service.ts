@@ -12,7 +12,8 @@ export const UserService: IUserService = {
                 {
                     password: hashedPassword,
                     email: data.email,
-                    name: data.name
+                    name: data.name,
+                    surname : data.surname
                 }
             );
             if (!creationResult.success) {
@@ -34,21 +35,33 @@ export const UserService: IUserService = {
 
         } catch (error) {
             console.error("Delete User Error:", error);
-            return createResult<null>(false, null, "Failed to delete user");
+            return createResult<null>(false, null, "Kullanıcı silinirken hata oluştu");
         }
     },
-    getIUserBasicInfoById: async (id: string): Promise<Result<IUserBasicInfo | null>> => {
+    getUser: async (id: string): Promise<Result<{
+        id: string,
+        name: string,
+        surname : string,
+        email: string,
+        role: string
+        bio: string|null,
+        profilePic: string
+        ledGroups: { id: string, name: string }[]
+        groups: { id: string, name: string }[]
+        projects: { id: string, name: string }[]
+    } | null>> => {
         try {
             const result = await UserRepository.getIUserBasicInfoById(id);
             if (!result.success) {
-                return createResult<IUserBasicInfo>(false, null, result.message);
+                return createResult(false, null, result.message);
             }
-            return createResult<IUserBasicInfo>(true, result.data);
+            return createResult(true, result.data);
         } catch (error) {
             console.error("Get User Info Error:", error);
-            return createResult<IUserBasicInfo>(false, null, "Failed to retrieve user information");
+            return createResult(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
         }
-    },
+    }
+    ,
     getUserByEmail: async (email: string): Promise<Result<IUserBasicInfo | null>> => {
         try {
             const result = await UserRepository.getUserByEmail(email);
@@ -58,7 +71,7 @@ export const UserService: IUserService = {
             return createResult<IUserBasicInfo>(true, result.data);
         } catch (error) {
             console.error("Get User Info Error:", error);
-            return createResult<IUserBasicInfo>(false, null, "Failed to retrieve user information");
+            return createResult<IUserBasicInfo>(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
         }
     },
     checkUserPasswordAndGetTokenInfos: async (data): Promise<Result<{
@@ -74,7 +87,7 @@ export const UserService: IUserService = {
             const isPasswordCorrect = await comparePassword(data.password, result.data.password);
 
             if (!isPasswordCorrect) {
-                console.log(result.message);
+                console.log("Şifre hatalı");
                 return createResult(false, null, "E-posta veya şifre hatalı");
             }
 
@@ -93,7 +106,7 @@ export const UserService: IUserService = {
             return createResult(true, null)
         } catch (error) {
             console.log("Update Username Error", error)
-            return createResult(false, null, "Failed to update username")
+            return createResult(false, null, "Kullanıcı adı güncellenirken bir hata oluştu")
         }
     },
     updateUserEmail: async (id: string, email: string): Promise<Result<null>> => {
@@ -105,7 +118,7 @@ export const UserService: IUserService = {
             return createResult(true, null)
         } catch (error) {
             console.log("Update Username Error", error)
-            return createResult(false, null, "Failed to update user email")
+            return createResult(false, null, "Kullanıcı e-postası güncellenirken bir hata oluştu")
         }
     },
     updateUserRole: async (id: string, role: string): Promise<Result<null>> => {
@@ -117,7 +130,7 @@ export const UserService: IUserService = {
             return createResult(true, null)
         } catch (error) {
             console.log("Update User Role Error", error)
-            return createResult(false, null, "Failed to update user role")
+            return createResult(false, null, "Kullanıcı rolü güncellenirken bir hata oluştu")
         }
     },
 }
