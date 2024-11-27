@@ -10,6 +10,7 @@ export const UserRepository: IUserRepository = {
                     email: data.email,
                     name: data.name,
                     password: data.password,
+                    surname: data.surname
                 },
             });
             return createResult<IUserBasicInfo>(true, user);
@@ -34,21 +35,53 @@ export const UserRepository: IUserRepository = {
         }
     },
 
-    getIUserBasicInfoById: async (id): Promise<Result<IUserBasicInfo | null>> => {
+    getIUserBasicInfoById: async (id): Promise<Result<{
+        id: string,
+        name: string,
+        email: string,
+        surname : string,
+        role: string
+        bio: string | null,
+        profilePic: string
+        ledGroups: { id: string, name: string }[]
+        groups: { id: string, name: string }[]
+        projects: { id: string, name: string }[]
+    } | null>> => {
         try {
             const user = await prisma.user.findUnique({
-                where: { id },
+                where: { id: id },
                 select: {
                     id: true,
                     name: true,
+                    surname:true,
                     email: true,
                     role: true,
-                },
-            }) as IUserBasicInfo;
+                    bio: true,
+                    profilePic: true,
+                    ledGroups: {
+                        select: {
+                            id: true,
+                            name: true,
+                        }
+                    },
+                    groups: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    },
+                    projects: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
+            });
             if (!user) {
                 return createResult(false, null, "Kullanıcı bulunamadı");
             }
-            return createResult<IUserBasicInfo>(true, user);
+            return createResult(true, user);
         } catch (error) {
             console.error("Get User Info Error:", error);
             return createResult(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
@@ -62,6 +95,7 @@ export const UserRepository: IUserRepository = {
                 select: {
                     name: true,
                     email: true,
+                    surname: true,
                     id: true,
                     role: true
                 }

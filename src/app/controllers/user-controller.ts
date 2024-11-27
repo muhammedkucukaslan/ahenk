@@ -25,7 +25,7 @@ export const UserController = {
             if (!userId) {
                 return NextResponse.json(createResult(false, null, "Yetkisiz işlem"), { status: 400 });
             }
-            const result = await UserService.getIUserBasicInfoById(userId);
+            const result = await UserService.getUser(userId);
             if (!result.success) {
                 return NextResponse.json(createResult(false, null, result.message), { status: 500 });
             }

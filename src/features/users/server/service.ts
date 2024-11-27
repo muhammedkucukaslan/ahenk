@@ -12,7 +12,8 @@ export const UserService: IUserService = {
                 {
                     password: hashedPassword,
                     email: data.email,
-                    name: data.name
+                    name: data.name,
+                    surname : data.surname
                 }
             );
             if (!creationResult.success) {
@@ -37,18 +38,30 @@ export const UserService: IUserService = {
             return createResult<null>(false, null, "Kullanıcı silinirken hata oluştu");
         }
     },
-    getIUserBasicInfoById: async (id: string): Promise<Result<IUserBasicInfo | null>> => {
+    getUser: async (id: string): Promise<Result<{
+        id: string,
+        name: string,
+        surname : string,
+        email: string,
+        role: string
+        bio: string|null,
+        profilePic: string
+        ledGroups: { id: string, name: string }[]
+        groups: { id: string, name: string }[]
+        projects: { id: string, name: string }[]
+    } | null>> => {
         try {
             const result = await UserRepository.getIUserBasicInfoById(id);
             if (!result.success) {
-                return createResult<IUserBasicInfo>(false, null, result.message);
+                return createResult(false, null, result.message);
             }
-            return createResult<IUserBasicInfo>(true, result.data);
+            return createResult(true, result.data);
         } catch (error) {
             console.error("Get User Info Error:", error);
-            return createResult<IUserBasicInfo>(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
+            return createResult(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
         }
-    },
+    }
+    ,
     getUserByEmail: async (email: string): Promise<Result<IUserBasicInfo | null>> => {
         try {
             const result = await UserRepository.getUserByEmail(email);
