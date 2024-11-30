@@ -13,10 +13,6 @@ const userHandler = new ApiResponseHandler('User', {
     paths: ['/api/users'],
   },
   notificationConfig: {
-    customMessages: {
-      success: 'Kullanıcı işlemi başarılı',
-      error: 'Kullanıcı işlemi başarısız',
-    },
     toastOptions: {
       duration: 4000,
     },

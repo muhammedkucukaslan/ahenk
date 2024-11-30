@@ -27,13 +27,12 @@ const SignupForm = () => {
     },
   });
 
-  const onSubmit = async (data: {
-    email: string;
-    name: string;
-    password: string;
-  }) => {
+  const onSubmit = async (data: yup.InferType<typeof registerSchema>) => {
     try {
-      await signup(data);
+      const success = await signup(data);
+      if (!success) {
+        return;
+      }
       const next = searchParams.get('next');
       const redirectTo = next ? String(next) : '/dashboard';
       router.push(redirectTo);
@@ -48,15 +47,26 @@ const SignupForm = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className={'flex flex-col gap-4 w-[100%] font-medium '}
+          className={'flex flex-col gap-4 w-[100%] font-medium'}
         >
-          <DynamicFormField
-            fieldType={FormFieldType.INPUT}
-            control={form.control}
-            name='name'
-            label='Adı'
-            placeholder='Örn: Ali'
-          />
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <DynamicFormField
+              fieldType={FormFieldType.INPUT}
+              control={form.control}
+              name='name'
+              label='İsim'
+              placeholder='İsminizi giriniz...'
+            />
+
+            <DynamicFormField
+              fieldType={FormFieldType.INPUT}
+              control={form.control}
+              name='surname'
+              label='Soyad'
+              placeholder='Soyadınızı giriniz...'
+            />
+          </div>
+
           <DynamicFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}

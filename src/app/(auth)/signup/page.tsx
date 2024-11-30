@@ -3,6 +3,7 @@
 import SignupFrom from '@/src/features/auth/forms/signup-form';
 import { CardContent, CardFooter, CardHeader } from '@/src/components/ui/card';
 import React from 'react';
+import Link from 'next/link';
 
 const SignupPage = () => {
   return (
@@ -21,12 +22,12 @@ const SignupPage = () => {
         <CardContent>
           <SignupFrom />
         </CardContent>
-        <CardFooter>
-          <p className={'font-semibold tracking-wide '}>
+        <CardFooter className='justify-center'>
+          <p className='text-sm'>
             Hesabın var mı?{' '}
-            <a href='/login' className={'text-blue-600'}>
-              giris yap
-            </a>
+            <Link href='/login' className={'text-primary font-semibold'}>
+              Giriş yap
+            </Link>
           </p>
         </CardFooter>
       </div>

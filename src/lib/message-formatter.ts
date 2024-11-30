@@ -19,7 +19,7 @@ export class MessageFormatter {
 
   formatError(action: string): string {
     return (
-      this.customMessages?.error || `${this.resourceName} ${action} failed`
+      this.customMessages?.error || `${this.resourceName} ${action} başarısız`
     );
   }
 }
