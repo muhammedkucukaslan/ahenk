@@ -6,7 +6,7 @@ import { ToastNotificationService } from '@/src/lib/services/notification-servic
 import { NextJSCacheService } from '@/src/lib/services/cache-service';
 import { AxiosResponse } from 'axios';
 
-const userHandler = new ApiResponseHandler('User', {
+const userHandler = new ApiResponseHandler('Kullanıcı', {
   notificationService: new ToastNotificationService(),
   cacheService: new NextJSCacheService(),
   cacheConfig: {
