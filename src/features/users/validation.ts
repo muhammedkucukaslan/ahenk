@@ -12,15 +12,7 @@ const loginSchema = yup.object().shape({
     password: yup.string().required(),
 })
 
-const IUserBasicInfoSchema  = yup.object().shape({
-    id: yup.string().required(),
-    name: yup.string().required(),
-    surname: yup.string().required(),
-    email: yup.string().email().required(),
-    role: yup.string().required(),
-})
 
-
-export { registerSchema, loginSchema, IUserBasicInfoSchema };
+export { registerSchema, loginSchema };
 
 
