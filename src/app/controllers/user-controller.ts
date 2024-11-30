@@ -5,7 +5,7 @@ import { registerSchema } from "@/src/features/users/validation";
 import { getUserFromCookies } from "@/src/utils/returnFunctions";
 import { headers } from 'next/headers'
 
-
+//example
 
 export const UserController = {
     deleteUser: async (params: { id: string }): Promise<ResultResponse<null>> => {
