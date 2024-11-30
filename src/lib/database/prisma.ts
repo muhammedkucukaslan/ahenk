@@ -1,13 +1,15 @@
+import { Pool, neonConfig } from '@neondatabase/serverless'
+import { PrismaNeon } from '@prisma/adapter-neon'
 import { PrismaClient } from '@prisma/client'
-import { PrismaLibSQL } from '@prisma/adapter-libsql'
-import { createClient } from '@libsql/client'
+import dotenv from 'dotenv'
+import ws from 'ws'
 
-const libsql = createClient({
-  url: `${process.env.TURSO_DATABASE_URL}`,
-  authToken: `${process.env.TURSO_AUTH_TOKEN}`,
-})
+dotenv.config()
+neonConfig.webSocketConstructor = ws
+const connectionString = `${process.env.DATABASE_URL}`
 
-const adapter = new PrismaLibSQL(libsql)
+const pool = new Pool({ connectionString })
+const adapter = new PrismaNeon(pool)
 const prisma = new PrismaClient({ adapter })
 
-export default prisma
+export default prisma 
