@@ -3,7 +3,7 @@ import { IUserRepository } from "./interfaces";
 import { createResult } from "@/src/utils/returnFunctions";
 
 export const UserRepository: IUserRepository = {
-    createUser: async (data): Promise<Result<IUserBasicInfo | null>> => {
+    createUser: async (data): Promise<Result<{id: string , role : string} | null>> => {
         try {
             const user = await prisma.user.create({
                 data: {
@@ -13,16 +13,26 @@ export const UserRepository: IUserRepository = {
                     surname: data.surname
                 },
             });
-            return createResult<IUserBasicInfo>(true, user);
+            return createResult(true, user);
         } catch (error: any) {
             console.error("Create User Error:", error);
-            if (error.code === "SQLITE_CONSTRAINT") {
-                return createResult(false, null, "Bu e-posta adresi kullanılmaktadır");
-            }
             return createResult(false, null, "Kullanıcı oluşturulurken hata oluştu");
         }
     },
-
+    isEmailValid: async (email): Promise<Result<null>> => {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { email: email },
+            })
+            if (user) {
+                return createResult(false, null, "Bu e-posta adresi kullanımda");
+            }
+            return createResult(true, null);
+        } catch (error) {
+            console.error("Check Email Error:", error);
+            return createResult(false, null, "E-posta kontrolünde hata oluştu");
+        }
+    },
     deleteUser: async (id): Promise<Result<null>> => {
         try {
             await prisma.user.delete({
@@ -35,45 +45,40 @@ export const UserRepository: IUserRepository = {
         }
     },
 
-    getIUserBasicInfoById: async (id): Promise<Result<{
-        id: string,
-        name: string,
-        email: string,
-        surname : string,
-        role: string
-        bio: string | null,
-        profilePic: string
-        ledGroups: { id: string, name: string }[]
-        groups: { id: string, name: string }[]
-        projects: { id: string, name: string }[]
-    } | null>> => {
+    getIUserBasicInfoById: async (id): Promise<Result<IUserProfile | null>> => {
         try {
             const user = await prisma.user.findUnique({
                 where: { id: id },
                 select: {
                     id: true,
                     name: true,
-                    surname:true,
+                    surname: true,
                     email: true,
                     role: true,
                     bio: true,
                     profilePic: true,
-                    ledGroups: {
+                    ledCommunities: {
                         select: {
                             id: true,
                             name: true,
                         }
                     },
-                    groups: {
+                    communities: {
                         select: {
                             id: true,
                             name: true
                         }
                     },
-                    projects: {
+                    questions: {
                         select: {
                             id: true,
-                            name: true
+                            title: true
+                        }
+                    },
+                    posts: {
+                        select: {
+                            id: true,
+                            title: true
                         }
                     }
                 }
@@ -87,29 +92,6 @@ export const UserRepository: IUserRepository = {
             return createResult(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
         }
     },
-
-    getUserByEmail: async (email): Promise<Result<IUserBasicInfo | null>> => {
-        try {
-            const user = await prisma.user.findUnique({
-                where: { email },
-                select: {
-                    name: true,
-                    email: true,
-                    surname: true,
-                    id: true,
-                    role: true
-                }
-            })
-            if (!user) {
-                return createResult(false, null, "Kullanıcı bulunamadı");
-            }
-            return createResult<IUserBasicInfo>(true, user);
-        } catch (error) {
-            console.error("Get User Info By Email Error:", error);
-            return createResult(false, null, "Kullanıcı bilgileri getirilirken bir hata oluştu");
-        }
-    },
-
     getUserPasswordAndTokenInfos: async (email: string): Promise<Result<{
         id: string,
         password: string,
@@ -166,21 +148,6 @@ export const UserRepository: IUserRepository = {
             console.error("Update User Name Error:", error);
             return createResult(false, null, "Kullanıcı e-postası güncellenirken hata oluştu");
         }
-    },
-
-    updateUserRole: async (id, role): Promise<Result<null>> => {
-        try {
-            await prisma.user.update({
-                where: { id },
-                data: {
-                    role: role,
-                },
-            });
-            return createResult(true, null);
-        } catch (error) {
-            console.error("Update User Name Error:", error);
-            return createResult(false, null, "Kullanıcı rolü güncellenirken hata oluştu");
-        }
-    },
+    }
 }
 

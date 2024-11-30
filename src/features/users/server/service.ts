@@ -5,8 +5,15 @@ import { hashPassword, comparePassword } from "../utils/bcrypt";
 
 
 export const UserService: IUserService = {
-    createUser: async (data): Promise<Result<IUserBasicInfo | null>> => {
+    createUser: async (data): Promise<Result<{
+        id: string,
+        role: string,
+    } | null>> => {
         try {
+            const isEmailValid = await UserRepository.isEmailValid(data.email);
+            if (!isEmailValid.success) {
+                return createResult<null>(false, null, isEmailValid.message)
+            }
             const hashedPassword = await hashPassword(data.password);
             const creationResult = await UserRepository.createUser(
                 {
@@ -19,7 +26,7 @@ export const UserService: IUserService = {
             if (!creationResult.success) {
                 return createResult<null>(false, null, creationResult.message);
             }
-            return createResult<IUserBasicInfo>(true, creationResult.data);
+            return createResult(true, creationResult.data);
         } catch (error) {
             console.error("Create User Error:", error);
             return createResult<null>(false, null, "Kullanıcı oluşturulurken hata oluştu");
@@ -38,18 +45,7 @@ export const UserService: IUserService = {
             return createResult<null>(false, null, "Kullanıcı silinirken hata oluştu");
         }
     },
-    getUser: async (id: string): Promise<Result<{
-        id: string,
-        name: string,
-        surname : string,
-        email: string,
-        role: string
-        bio: string|null,
-        profilePic: string
-        ledGroups: { id: string, name: string }[]
-        groups: { id: string, name: string }[]
-        projects: { id: string, name: string }[]
-    } | null>> => {
+    getUser: async (id: string): Promise<Result<IUserProfile|null>> => {
         try {
             const result = await UserRepository.getIUserBasicInfoById(id);
             if (!result.success) {
@@ -59,19 +55,6 @@ export const UserService: IUserService = {
         } catch (error) {
             console.error("Get User Info Error:", error);
             return createResult(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
-        }
-    }
-    ,
-    getUserByEmail: async (email: string): Promise<Result<IUserBasicInfo | null>> => {
-        try {
-            const result = await UserRepository.getUserByEmail(email);
-            if (!result.success) {
-                return createResult<IUserBasicInfo>(false, null, "User not found");
-            }
-            return createResult<IUserBasicInfo>(true, result.data);
-        } catch (error) {
-            console.error("Get User Info Error:", error);
-            return createResult<IUserBasicInfo>(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
         }
     },
     checkUserPasswordAndGetTokenInfos: async (data): Promise<Result<{
@@ -121,17 +104,6 @@ export const UserService: IUserService = {
             return createResult(false, null, "Kullanıcı e-postası güncellenirken bir hata oluştu")
         }
     },
-    updateUserRole: async (id: string, role: string): Promise<Result<null>> => {
-        try {
-            const result = await UserRepository.updateUserRole(id, role)
-            if (!result.success) {
-                return createResult(false, null, result.message)
-            }
-            return createResult(true, null)
-        } catch (error) {
-            console.log("Update User Role Error", error)
-            return createResult(false, null, "Kullanıcı rolü güncellenirken bir hata oluştu")
-        }
-    },
+
 }
 
