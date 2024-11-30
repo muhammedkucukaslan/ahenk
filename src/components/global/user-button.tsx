@@ -20,11 +20,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { logout } from '@/src/features/auth/actions';
+import { useRouter } from 'next/navigation';
 
 const UserButton = () => {
   const { data: user, isLoading, error } = useSWR('/users', fetcher);
+  const router = useRouter();
 
-  console.log(user);
+  const handleLogout = async () => {
+    const res = await logout();
+    if (res) {
+      router.push('/login');
+    }
+  };
 
   if (isLoading)
     return (
@@ -70,7 +78,7 @@ const UserButton = () => {
           <Moon />
           Görünüm
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOut />
           Çıkış yap
         </DropdownMenuItem>

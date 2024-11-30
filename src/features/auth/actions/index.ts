@@ -3,12 +3,12 @@ import { axiosInstance } from '@/src/utils';
 import * as yup from 'yup';
 import { loginSchema, registerSchema } from '../../users/validation';
 import { ToastNotificationService } from '@/src/lib/services/notification-service';
-import { NextJSCacheService } from '@/src/lib/services/cache-service';
+import { CacheService } from '@/src/lib/services/cache-service';
 import { AxiosResponse } from 'axios';
 
 const userHandler = new ApiResponseHandler('Kullanıcı', {
   notificationService: new ToastNotificationService(),
-  cacheService: new NextJSCacheService(),
+  cacheService: new CacheService(),
   cacheConfig: {
     paths: ['/api/users'],
   },
@@ -38,5 +38,18 @@ export const signup = async (
     return userHandler.handleResponse(res, 'kayıt');
   } catch (error: any) {
     return userHandler.handleResponse(error, 'kayıt');
+  }
+};
+
+export const logout = async (): Promise<boolean> => {
+  try {
+    const res: AxiosResponse = await axiosInstance.post('/logout');
+    if (res.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error: any) {
+    return false;
   }
 };

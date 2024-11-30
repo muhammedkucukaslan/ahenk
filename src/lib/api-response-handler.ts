@@ -37,7 +37,7 @@ export class ApiResponseHandler<T = any> {
     });
 
     if (this.cacheConfig?.paths.length) {
-      this.cacheService.revalidate(this.cacheConfig.paths);
+      this.cacheService.revalidateMultiple(this.cacheConfig.paths);
     }
   }
 

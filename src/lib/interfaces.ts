@@ -6,5 +6,5 @@ export interface INotificationService {
 }
 
 export interface ICacheService {
-  revalidate(paths: string[]): void;
+  revalidateMultiple(paths: string[]): void;
 }
