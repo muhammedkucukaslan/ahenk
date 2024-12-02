@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import SideBar from './dashboard/sidebar/SideBar';
+import SideBar from '../components/global/app-sidebar';
 import { Button } from '@/src/components/ui/button';
 import useSidebarStore from './dashboard/sidebar/SideBarStore';
 

@@ -170,7 +170,7 @@ const DynamicFormField = (props: CustomProps) => {
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className='w-full'>
           {props.fieldType !== FormFieldType.CHECKBOX && label && (
             <FormLabel className='shad-input-label'>{label}</FormLabel>
           )}
