@@ -10,7 +10,7 @@ import DynamicFormField, {
 import SubmitButton from '@/src/components/global/submit-button';
 import { login } from '../actions';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ToastService } from '../../toasts/services';
+import { ToastService } from '../../../lib/services/toast-service';
 
 const LoginForm = () => {
   const router = useRouter();
