@@ -3,8 +3,8 @@ import React from 'react';
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className='h-screen w-full'>
-      <Card className='border-none md:border'>{children}</Card>
+    <main className='h-full w-full flex items-center justify-center'>
+      <Card className='border-none md:border w-full max-w-lg'>{children}</Card>
     </main>
   );
 };
