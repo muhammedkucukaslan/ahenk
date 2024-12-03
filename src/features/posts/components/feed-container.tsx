@@ -146,7 +146,7 @@ const mockFeed: Post[] = [
 
 const FeedContainer = () => {
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex flex-col gap-4 flex-1 min-w-0'>
       {mockFeed.map((post) => (
         <Post key={post.createdAt} {...post} />
       ))}
