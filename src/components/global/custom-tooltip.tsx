@@ -13,8 +13,8 @@ type CustomTooltipProps = {
 const CustomTooltip = ({ children, content }: CustomTooltipProps) => {
   return (
     <TooltipProvider>
-      <TooltipTrigger>{children}</TooltipTrigger>
       <Tooltip>
+        <TooltipTrigger>{children}</TooltipTrigger>
         <TooltipContent>{content}</TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -40,12 +40,15 @@ const UserButton = () => {
         <Spinner />
       </div>
     );
-  if (error)
+  if (error || !user) {
+    console.error('Kullanıcı bilgileri çekilemedi: ', error);
+
     return (
       <CustomTooltip content='Kullanıcı bilgileri çekilemedi'>
         <AlertCircle size={18} className='text-destructive' />
       </CustomTooltip>
     );
+  }
 
   return (
     <DropdownMenu>
