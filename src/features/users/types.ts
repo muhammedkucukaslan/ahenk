@@ -18,6 +18,7 @@ type IUserProfile = {
   role: string
   bio: string | null,
   profilePic: string
+  createdAt: Date
   ledCommunities: { id: string, name: string }[]
   communities: { id: string, name: string }[]
   questions: { id: string, title: string }[]
