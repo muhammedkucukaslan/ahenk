@@ -57,6 +57,7 @@ export const UserRepository: IUserRepository = {
                     role: true,
                     bio: true,
                     profilePic: true,
+                    createdAt: true,
                     ledCommunities: {
                         select: {
                             id: true,
