@@ -13,7 +13,6 @@ export default function DashboardLayout({
 
       <main className='h-full overflow-y-auto overflow-x-hidden'>
         <Navbar />
-
         <div className='p-6'>{children}</div>
       </main>
     </SidebarProvider>

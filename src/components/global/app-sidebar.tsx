@@ -114,7 +114,7 @@ const communities = [
 
 const SideBar = () => {
   return (
-    <Sidebar>
+    <Sidebar className='pt-[62px]'>
       <SidebarContent>
         <Collapsible className='group/collapsible'>
           <SidebarGroup>
