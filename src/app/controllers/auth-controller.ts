@@ -66,11 +66,11 @@ export const AuthController = {
       const response = NextResponse.json(createResult(true, null), {
         status: 200,
       });
-      console.log('token', result.data.token);
       response.cookies.set({
         name: 'token',
         value: result.data.token,
         path: '/',
+        maxAge: 14 * 24 * 60 * 60 * 1000
       });
       return response;
     } catch (error: any) {
