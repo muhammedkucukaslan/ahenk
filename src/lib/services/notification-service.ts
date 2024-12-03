@@ -1,4 +1,4 @@
-import { ToastService } from '@/src/features/toasts/services';
+import { ToastService } from '@/src/lib/services/toast-service';
 import { ToastOptions } from '../types';
 import { INotificationService } from '../interfaces';
 

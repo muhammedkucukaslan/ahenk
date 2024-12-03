@@ -10,7 +10,7 @@ import {
 import { Dot, MessageCircle, Share, ThumbsUp } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
-import CommentForm from '../../forms/comment-form';
+import CommentForm from '../forms/comment-form';
 
 const Post = ({ body, createdAt, files, group, author }: Post) => {
   const [showCommentForm, setShowCommentForm] = React.useState(false);
