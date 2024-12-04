@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
             response.cookies.delete("token");
             return response;
         }
-        const response = NextResponse.redirect(new URL('/dashboard', url));
+        const response = NextResponse.redirect(new URL('/', url));
         return response;
     }
 
@@ -36,5 +36,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/signup', '/login', '/dashboard/:path*','/api/:path*'],
+    matcher: ['/signup', '/login','/api/:path*'],
 };
