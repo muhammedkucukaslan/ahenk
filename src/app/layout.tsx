@@ -5,9 +5,6 @@ import { Inter } from 'next/font/google';
 import { SidebarProvider } from '../components/ui/sidebar';
 import SideBar from '../components/global/app-sidebar';
 import Navbar from '../components/global/navbar';
-import { SidebarProvider } from '../components/ui/sidebar';
-import SideBar from '../components/global/app-sidebar';
-import Navbar from '../components/global/navbar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,10 +16,8 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
   auth,
-  auth,
 }: Readonly<{
   children: React.ReactNode;
-  auth?: React.ReactNode;
   auth?: React.ReactNode;
 }>) {
   if (auth) return auth;
@@ -37,15 +32,6 @@ export default function RootLayout({
           <Navbar />
 
           <main className='container mx-auto px-1 md:px-4 pt-[84px]'>
-            {children}
-          </main>
-          <Toaster />
-        </SidebarProvider>
-        <SidebarProvider>
-          <SideBar />
-          <Navbar />
-
-          <main className='container mx-auto flex gap-4 px-1 md:px-4 pt-[84px]'>
             {children}
           </main>
           <Toaster />
