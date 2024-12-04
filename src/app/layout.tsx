@@ -29,7 +29,7 @@ export default function RootLayout({
           <SideBar />
           <Navbar />
 
-          <main className='container mx-auto flex gap-4 px-1 md:px-4 pt-[84px]'>
+          <main className='container mx-auto px-1 md:px-4 pt-[84px]'>
             {children}
           </main>
           <Toaster />

@@ -77,7 +77,7 @@ const PopularCommunities = () => {
           <div className='flex flex-col gap-2'>
             {mockData.map((community) => (
               <Link
-                href={community.slug}
+                href={`community/${community.slug}`}
                 key={community.id}
                 className='flex items-center gap-3 rounded-lg hover:bg-secondary px-3 py-2'
               >
