@@ -1,101 +1,92 @@
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["driverAdapters"]
-  }
-  
-  datasource db {
-    provider  = "postgresql"
-    url       = env("DATABASE_URL")
-    directUrl = env("DIRECT_URL")
-  }
-  
-  model User {
-    id             String      @id @default(uuid())
-    name           String
-    surname        String
-    email          String      @unique
-    password       String
-    profilePic     String      @default("https://cdn.iconscout.com/icon/free/png-256/avatar-380-456332.png")
-    bio            String?
-    role           Role        @default(USER)
-    questions      Question[]
-    ledCommunities Community[] @relation("CommunityLeader")
-    communities    Community[] @relation("CommunityToUser")
-    createdAt      DateTime    @default(now())
-    posts          Post[]
-    comments       Comment[]
-    replies        Reply[]
-  }
-  
-  model Community {
-    id          String   @id @default(uuid())
-    name        String
-    description String?
-    isPublic    Boolean  
-    topics      Topic[]
-    leaders     User[]   @relation("CommunityLeader")
-    members     User[]   @relation("CommunityToUser")
-    createdAt   DateTime @default(now())
-  }
-  
-  model Topic {
-    id          String       @id @default(uuid())
-    title       String
-    content     String
-    posts       Post[]
-    communityId String
-    Community   Community @relation(fields: [communityId], references: [id])
-    createdAt   DateTime  @default(now())
-  }
-  
-  model Post {
-    id        String    @id @default(uuid())
-    title     String
-    content   String
-    userId    String
-    user      User      @relation(fields: [userId], references: [id])
-    topicId   String
-    topic     Topic?    @relation(fields: [topicId], references: [id])
-    comments  Comment[]
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-  }
-  
-  model Comment {
-    id        String   @id @default(uuid())
-    content   String
-    userId    String
-    user      User     @relation(fields: [userId], references: [id])
-    postId    String
-    post      Post     @relation(fields: [postId], references: [id])
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-  }
-  
-  model Question {
-    id        String   @id @default(uuid())
-    title     String
-    content   String
-    userId    String
-    user      User     @relation(fields: [userId], references: [id])
-    replies   Reply[]
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-  }
-  
-  model Reply {
-    id         String   @id @default(uuid())
-    content    String
-    userId     String
-    user       User     @relation(fields: [userId], references: [id])
-    questionId String
-    question   Question @relation(fields: [questionId], references: [id])
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
-  }
-  
-  enum Role {
-    USER
-    ADMIN
-    MODERATOR
-  }
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id             String      @id @default(uuid())
+  username       String      @unique 
+  email          String      @unique
+  password       String
+  profilePic     String      @default("https://cdn.iconscout.com/icon/free/png-256/avatar-380-456332.png")
+  bio            String?
+  role           Role        @default(USER)
+  ledCommunities Community[] @relation("CommunityLeader")
+  communities    Community[] @relation("CommunityToUser")
+  createdAt      DateTime    @default(now())
+  posts          Post[]
+  votes          Vote[]
+  comments       Comment[]
+}
+
+model Community {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  isPublic    Boolean
+  topics      Topic[]
+  leaders     User[]   @relation("CommunityLeader")
+  members     User[]   @relation("CommunityToUser")
+  createdAt   DateTime @default(now())
+}
+
+model Topic {
+  id          String      @id @default(uuid())
+  title       String
+  content     String
+  posts       Post[]
+  communities Community[]
+  createdAt   DateTime    @default(now())
+}
+
+model Post {
+  id        String    @id @default(uuid())
+  title     String
+  content   String
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  topicId   String
+  topic     Topic?    @relation(fields: [topicId], references: [id])
+  comments  Comment[]
+  votes     Vote[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  value     Int
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  postId    String?
+  post      Post?    @relation(fields: [postId], references: [id])
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id])
+}
+
+model Comment {
+  id        String    @id @default(uuid())
+  content   String
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Vote      Vote[]
+  parent    Comment?  @relation("CommentParent", fields: [parentId], references: [id])
+  parentId  String?
+  children  Comment[] @relation("CommentParent")
+}
+
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
