@@ -1,106 +1,69 @@
-import { UserService } from '@/src/features/users/server/service';
-import { NextRequest, NextResponse } from 'next/server';
-import { createResult } from '@/src/utils/returnFunctions';
-import { registerSchema, loginSchema } from '@/src/features/users/validation';
+import { NextRequest } from 'next/server';
+import { handleSuccessResponse, handleErrorResponse, validateData } from '@/src/utils/returnFunctions';
+import { registerSchema, loginSchema } from '@/src/features/users/server/validation';
 import { auth } from '../useCases/auth';
 
 export const AuthController = {
-  signup: async (req: NextRequest): Promise<ResultResponse<null>> => {
+  signup: async (req: NextRequest): IResponse => {
     try {
       const data = await req.json();
 
-      await registerSchema.validate(data);
-      //e posta dogrulamsai
-      const result = await auth.signup(data);
+      const validatedData = await validateData(data, registerSchema);
+      if (!validatedData) {
+        return handleErrorResponse('INVALID_DATA', 'Geçersiz bilgiler gönderildi');
+      }
+      const result = await auth.signup(validatedData);
 
-      if (!result.success || !result.data) {
-        return NextResponse.json(
-          createResult(
-            false,
-            null,
-            result.message || 'Hesap oluşturma işleminde hata oluştu.'
-          ),
-          { status: 400 }
-        );
+      if (!result.success) {
+        return handleErrorResponse(result.ERR_CODE, result.message)
       }
 
-      const response = NextResponse.json(createResult(true, null), {
-        status: 201,
-      });
+      const response = handleSuccessResponse(null, 200);
       response.cookies.set({
         name: 'token',
-        value: result.data.token,
+        value: result.data,
         path: '/',
         maxAge: 14 * 24 * 60 * 60 * 1000
       });
 
       return response;
     } catch (error: any) {
-      console.error('Signup Error:', error);
-      if (error.name === 'ValidationError') {
-        return NextResponse.json(
-          createResult(false, null, 'Geçersiz bilgiler gönderildi'),
-          { status: 400 }
-        );
-      }
-      return NextResponse.json(
-        createResult(false, null, 'Hesap oluşturma işleminde hata oluştu'),
-        { status: 500 }
-      );
+      return handleErrorResponse('SERVER_ERROR', 'Kayıt işleminde hata oluştu');
     }
   },
-  login: async (req: NextRequest): Promise<ResultResponse<null>> => {
+  login: async (req: NextRequest): IResponse => {
     try {
       const data = await req.json();
       await loginSchema.validate(data);
 
       const result = await auth.login(data);
 
-      if (!result.success || !result.data) {
-        return NextResponse.json(
-          createResult(false, null, result.message || 'Login failed'),
-          { status: 400 }
-        );
+      if (!result.success) {
+        return handleErrorResponse(result.ERR_CODE, result.message);
       }
 
-      const response = NextResponse.json(createResult(true, null), {
-        status: 200,
-      });
+      const response = handleSuccessResponse(null, 200);
       response.cookies.set({
         name: 'token',
-        value: result.data.token,
+        value: result.data,
         path: '/',
         maxAge: 14 * 24 * 60 * 60 * 1000
       });
       return response;
     } catch (error: any) {
-      console.error('Signin Error:', error);
-      if (error.name === 'ValidationError') {
-        return NextResponse.json(
-          createResult(false, null, 'Geçersiz bilgiler gönderildi.'),
-          { status: 400 }
-        );
-      }
-      return NextResponse.json(
-        createResult(false, null, 'Giriş işleminde hata oluştu.'),
-        { status: 500 }
-      );
+      console.error('Login Error:', error);
+      return handleErrorResponse('SERVER_ERROR', 'Giriş işleminde hata oluştu');
     }
   },
-  logout: async (req: NextRequest): Promise<ResultResponse<null>> => {
+  logout: async (req: NextRequest): IResponse => {
     try {
       const token = req.cookies.get('token');
 
       if (!token) {
-        return NextResponse.json(
-          createResult(false, null, 'Yetkilendirilmemiş işlem yapıldı'),
-          { status: 400 }
-        );
+        return handleErrorResponse('UNAUTHORIZED', 'Kullanıcı bilgileri getirilirken bir hata oluştu');
       }
 
-      const response = NextResponse.json(createResult(true, null), {
-        status: 200,
-      });
+      const response = handleSuccessResponse(null, 200);
       response.cookies.set({
         name: 'token',
         value: '',
@@ -108,10 +71,7 @@ export const AuthController = {
       return response;
     } catch (error: any) {
       console.error('Logout Error:', error);
-      return NextResponse.json(
-        createResult(false, null, 'Çıkış yapmada hata oluştu'),
-        { status: 500 }
-      );
+      return handleErrorResponse('SERVER_ERROR', 'Çıkış işleminde hata oluştu');
     }
   },
 };

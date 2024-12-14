@@ -1,5 +1,5 @@
 interface IAuthService {
-    generateToken: (id: string, role: string) => Promise<Result<string | null>>;
+    generateToken: (id: string, role: string) => Promise<IResult<string>>;
 }
 
 export type { IAuthService };

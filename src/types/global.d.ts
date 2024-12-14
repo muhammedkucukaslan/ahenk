@@ -1,26 +1,20 @@
-type Group = {
-  id: string;
-  name: string;
-  members: User[];
-  projects: Project[];
-  leader: User;
-  leaderId: string;
-};
+type SuccessResult<T> = {
+  success: true;
+  data: T ;
+}
 
-type Project = {
-  id: string;
-  name: string;
-  members: User[];
-  group: Group;
-  groupId: string;
-  leader: User;
-  leaderId: string;
-};
+type ErrorResult= {
+  success: false;
+  message: string;
+  ERR_CODE: string;
+}
 
-type Result<T> = {
-  success: boolean;
-  data: T | null;
-  message?: string;
-};
+type ApiResponse<T> = NextResponse<T>
+type ApiError = NextResponse<{
+  message: string
+  ERR_CODE?: string
+}>
 
-type ResultResponse<T> = NextResponse<Result<T>>;
+
+type IResponse<T=null> = ApiResponse<T> | ApiError
+type IResult<T = null> = SuccessResult<T> | ErrorResult

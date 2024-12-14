@@ -1,20 +1,19 @@
 import { IAuthService } from "./interfaces";
-import { createResult } from "@/src/utils/returnFunctions";
 import { generateToken } from "../utils/token";
+import { createErrorResult, createSuccessResult} from "@/src/utils/returnFunctions";
 
 export const AuthService: IAuthService = {
-    generateToken: async (id : string, role: string): Promise<Result<string|null>> => {
+    generateToken: async (id : string, role: string): Promise<IResult<string>> => {
         try {
             const token = await generateToken(id, role);
             
             if (!token) {
-                return createResult(false, null, "Token üretilemedi");
+                return createErrorResult("Token üretiminde hata oluştu", "SERVER_ERROR");
             }
-            
-            return createResult(true, token);
+            return createSuccessResult(token);
         } catch (error) {
             console.error("Generate Token Error:", error);
-            return createResult(false, null, "Token üretiminde hata oluştu");
+            return createErrorResult("Token üretiminde hata oluştu", "SERVER_ERROR")
         }
     }
 }
