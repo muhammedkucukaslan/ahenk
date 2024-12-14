@@ -11,7 +11,7 @@ datasource db {
 
 model User {
   id             String      @id @default(uuid())
-  username       String      @unique 
+  username       String      @unique
   email          String      @unique
   password       String
   profilePic     String      @default("https://cdn.iconscout.com/icon/free/png-256/avatar-380-456332.png")
@@ -30,57 +30,59 @@ model Community {
   name        String   @unique
   description String?
   isPublic    Boolean
-  topics      Topic[]
   leaders     User[]   @relation("CommunityLeader")
   members     User[]   @relation("CommunityToUser")
+  posts       Post[]
+  topics      Topic[]
   createdAt   DateTime @default(now())
 }
 
 model Topic {
   id          String      @id @default(uuid())
-  title       String
+  title       String      @unique
+  slug        String      @unique
   content     String
-  posts       Post[]
   communities Community[]
   createdAt   DateTime    @default(now())
 }
 
 model Post {
-  id        String    @id @default(uuid())
-  title     String
-  content   String
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  topicId   String
-  topic     Topic?    @relation(fields: [topicId], references: [id])
-  comments  Comment[]
-  votes     Vote[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id            String    @id @default(uuid())
+  title         String    @unique
+  slug          String    @unique
+  content       String
+  authorId      String
+  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  communityName String
+  community     Community @relation(fields: [communityName], references: [name], onDelete: Cascade)
+  comments      Comment[]
+  votes         Vote[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Vote {
   id        String   @id @default(uuid())
   value     Int
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   postId    String?
-  post      Post?    @relation(fields: [postId], references: [id])
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
   commentId String?
-  comment   Comment? @relation(fields: [commentId], references: [id])
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }
 
 model Comment {
   id        String    @id @default(uuid())
   content   String
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   postId    String
-  post      Post      @relation(fields: [postId], references: [id])
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Vote      Vote[]
-  parent    Comment?  @relation("CommentParent", fields: [parentId], references: [id])
+  votes     Vote[]
+  parent    Comment?  @relation("CommentParent", fields: [parentId], references: [id], onDelete: Cascade)
   parentId  String?
   children  Comment[] @relation("CommentParent")
 }
