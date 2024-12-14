@@ -1,109 +1,116 @@
 import { UserRepository } from "./repository";
 import { IUserService } from "./interfaces";
-import { createResult } from "@/src/utils/returnFunctions";
+import { createErrorResult, createSuccessResult } from "@/src/utils/returnFunctions";
 import { hashPassword, comparePassword } from "../utils/bcrypt";
 
 
 export const UserService: IUserService = {
-    createUser: async (data): Promise<Result<{
-        id: string,
-        role: string,
-    } | null>> => {
+    createUser: async (data): Promise<IResult<{ id: string, role: string }>> => {
         try {
+            const isUsernameValid = await UserRepository.isUsernameValid(data.username);
+            if (!isUsernameValid.success) {
+                return createErrorResult(isUsernameValid.message, isUsernameValid.ERR_CODE);
+            }
             const isEmailValid = await UserRepository.isEmailValid(data.email);
             if (!isEmailValid.success) {
-                return createResult<null>(false, null, isEmailValid.message)
+                return createErrorResult(isEmailValid.message, isEmailValid.ERR_CODE);
             }
             const hashedPassword = await hashPassword(data.password);
             const creationResult = await UserRepository.createUser(
                 {
-                    password: hashedPassword,
+                    username: data.username,
                     email: data.email,
-                    name: data.name,
-                    surname : data.surname
+                    password: hashedPassword,
                 }
             );
             if (!creationResult.success) {
-                return createResult<null>(false, null, creationResult.message);
+                return createErrorResult(creationResult.message, creationResult.ERR_CODE);
             }
-            return createResult(true, creationResult.data);
+            return createSuccessResult(creationResult.data);
         } catch (error) {
             console.error("Create User Error:", error);
-            return createResult<null>(false, null, "Kullanıcı oluşturulurken hata oluştu");
+            return createErrorResult("Kullanıcı oluşturulurken bir hata oluştu", "SERVER_ERROR");
         }
     },
-    deleteUser: async (id: string): Promise<Result<null>> => {
+    deleteUser: async (id: string): Promise<IResult> => {
         try {
             const result = await UserRepository.deleteUser(id);
             if (!result.success) {
-                return createResult<null>(false, null, result.message);
+                return createErrorResult(result.message, result.ERR_CODE);
             }
-            return createResult<null>(true, null);
-
+            return createSuccessResult(null);
         } catch (error) {
             console.error("Delete User Error:", error);
-            return createResult<null>(false, null, "Kullanıcı silinirken hata oluştu");
+            return createErrorResult("Kullanıcı silinirken bir hata oluştu", "SERVER_ERROR");
         }
     },
-    getUser: async (id: string): Promise<Result<IUserProfile|null>> => {
+    getCurrentUser: async (id: string): Promise<IResult<IUserProfile>> => {
         try {
-            const result = await UserRepository.getIUserBasicInfoById(id);
+            const result = await UserRepository.getCurrent(id);
             if (!result.success) {
-                return createResult(false, null, result.message);
+                return createErrorResult(result.message, result.ERR_CODE);
             }
-            return createResult(true, result.data);
+            return createSuccessResult(result.data);
         } catch (error) {
             console.error("Get User Info Error:", error);
-            return createResult(false, null, "Kullanıcı bilgileri getirilirken hata oluştu");
+            return createErrorResult("Kullanıcı bilgileri getirilirken bir hata oluştu", "SERVER_ERROR");
         }
     },
-    checkUserPasswordAndGetTokenInfos: async (data): Promise<Result<{
-        id: string;
-        role: string;
-    } | null>> => {
+    getUserByUsername: async (name: string): Promise<IResult<ILimitedUserProfile>> => {
+        try {
+            const result = await UserRepository.getUserByUsername(name);
+            if (!result.success) {
+                return createErrorResult(result.message, result.ERR_CODE);
+            }
+            return createSuccessResult(result.data);
+        } catch (error) {
+            console.error("Get User By Username Error:", error);
+            return createErrorResult("Kullanıcı bilgileri getirilirken bir hata oluştu", "SERVER_ERROR");
+        }
+    },
+    checkUserPasswordAndGetTokenInfos: async (data): Promise<IResult<{id: string; role: string}>> => {
         try {
             const result = await UserRepository.getUserPasswordAndTokenInfos(data.email);
-            if (!result.success || !result.data) {
+            if (!result.success) {
                 console.log(result.message);
-                return createResult(false, null, "E-posta veya şifre hatalı");
+                return createErrorResult(result.message, result.ERR_CODE);
             }
             const isPasswordCorrect = await comparePassword(data.password, result.data.password);
 
             if (!isPasswordCorrect) {
                 console.log("Şifre hatalı");
-                return createResult(false, null, "E-posta veya şifre hatalı");
+                return createErrorResult("E-posta veya şifre hatalı", "INVALID_CREDENTIALS");
             }
-
-            return createResult<{ id: string, role: string }>(true, result.data);
+            return createSuccessResult({ id: result.data.id, role: result.data.role });
         } catch (error) {
             console.error("Check Password Error:", error);
-            return createResult(false, null, "E-posta veya şifre hatalı");
+            return createErrorResult("Giriş işlemi sırasında hata oluştu", "SERVER_ERROR");
         }
     },
-    updateUserName: async (id: string, name: string): Promise<Result<null>> => {
-        try {
-            const result = await UserRepository.updateUserName(id, name)
-            if (!result.success) {
-                return createResult(false, null, result.message)
-            }
-            return createResult(true, null)
-        } catch (error) {
-            console.log("Update Username Error", error)
-            return createResult(false, null, "Kullanıcı adı güncellenirken bir hata oluştu")
-        }
-    },
-    updateUserEmail: async (id: string, email: string): Promise<Result<null>> => {
-        try {
-            const result = await UserRepository.updateUserEmail(id, email)
-            if (!result.success) {
-                return createResult(false, null, result.message)
-            }
-            return createResult(true, null)
-        } catch (error) {
-            console.log("Update Username Error", error)
-            return createResult(false, null, "Kullanıcı e-postası güncellenirken bir hata oluştu")
-        }
-    },
+    // updateUserName: async (id: string, name: string): Promise<Result<null>> => {
+    //     try {
+    //         const result = await UserRepository.updateUserName(id, name)
+    //         if (!result.success) {
+    //             return createResult(false, null, result.message)
+    //         }
+    //         return createResult(true, null)
+    //     } catch (error) {
+    //         console.log("Update Username Error", error)
+    //         return createResult(false, null, "Kullanıcı adı güncellenirken bir hata oluştu")
+    //     }
+    // },
+    // updateUserEmail: async (id: string, email: string): Promise<Result<null>> => {
+    //     try {
+    //         const result = await UserRepository.updateUserEmail(id, email)
+    //         if (!result.success) {
+    //             return createResult(false, null, result.message)
+    //         }
+    //         return createResult(true, null)
+    //     } catch (error) {
+    //         console.log("Update Username Error", error)
+    //         return createResult(false, null, "Kullanıcı e-postası güncellenirken bir hata oluştu")
+    //     }
+    // },
 
 }
 

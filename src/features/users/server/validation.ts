@@ -1,9 +1,10 @@
 import * as yup from "yup";
 
-const registerSchema  = yup.object().shape({
+const registerSchema = yup.object().shape({
     email: yup.string().email().required(),
-    name: yup.string().required(),
-    surname : yup.string().required(),
+    username: yup.string().required().lowercase().test('is-single-word', 'Kullanıcı isminde boşluk olamaz', (value: any) => {
+        return value && !/\s/.test(value);
+    }),
     password: yup.string().required(),
 });
 

@@ -12,8 +12,7 @@ type User = {
 
 type IUserProfile = {
   id: string,
-  name: string,
-  surname: string
+  username: string,
   email: string,
   role: string
   bio: string | null,
@@ -21,7 +20,16 @@ type IUserProfile = {
   createdAt: Date
   ledCommunities: { id: string, name: string }[]
   communities: { id: string, name: string }[]
-  questions: { id: string, title: string }[]
+  posts: { id: string, title: string }[]
+  comments: { id: string, content: string }[]
+}
+
+type ILimitedUserProfile = {
+  id: string,
+  username: string,
+  profilePic: string,
+  bio: string | null,
+  communities: { id: string, name: string }[]
   posts: { id: string, title: string }[]
 }
 
