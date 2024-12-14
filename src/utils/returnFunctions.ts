@@ -1,11 +1,14 @@
 import { jwtVerify } from "jose"
 import { NextRequest, NextResponse } from 'next/server'
 import * as yup from 'yup'
+import slugify from 'slugify'
+
 async function validateData<T>(data: T, schema: yup.ObjectSchema<any>): Promise<T | null> {
     try {
         await schema.validate(data, { abortEarly: false });
         return data
     } catch (error) {
+        console.error('error', error)
         return null;
     }
 };
@@ -99,6 +102,14 @@ function handleSuccessResponse<T>(data: T, code: number = 200): ApiResponse<T> {
 }
 
 
+function makeItUrl(text: string): string {
+    return slugify(text, {
+        lower: true,                
+        strict: true,               
+        remove: /[^a-zA-Z0-9 _]/g,  
+        replacement: '_'            
+    });
+};
 
 
 const Auth_Pages = ['/login', '/signup'];
@@ -114,5 +125,6 @@ export {
     getUserFromCookies,
     isAuthPage,
     verifyToken,
-    validateData
+    validateData,
+    makeItUrl
 };
